@@ -40,7 +40,8 @@ function [u1,u2]=controller(ksi_desired, ksi_desired_dot, ksi_desired_dot2, ksi_
 
     R_desired=[xB_desired,yB_desired,zB_desired];
 
-    e_R=1/2*vex(transpose(R_desired)*R-transpose(R)*R_desired);
+    e_R=1/2*vex((R_desired.')*R-(R.')*R_desired);
+    e_R = e_R.';
 
     % omega_desired 到底该怎么算？ 还没想完全清楚。
     h=m/u1*(ksi_desired_dot3-dot(zB_desired,ksi_desired_dot3)*zB_desired);
@@ -51,10 +52,4 @@ function [u1,u2]=controller(ksi_desired, ksi_desired_dot, ksi_desired_dot2, ksi_
 
     e_omega=omega-omega_desired;
     u2=-Kp_omega*e_omega-Kd_omega*e_R;
-end
-
-function w = vex(R)
-    w(1,1) = -R(2,3);
-    w(2,1) = R(1,3);
-    w(3,1) = -R(1,2);
 end

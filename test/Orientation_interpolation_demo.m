@@ -14,4 +14,8 @@ end
 % function demo
 Tf = 10;
 u = linspace(0,Tf,100);
-R_u = OriInter(R,3,u);
+[y_u,yd_u] = OriInter(R,3,u);
+
+plot(u,y_u,u,yd_u)
+legend('yaw','yawd')
+title('yaw desired')

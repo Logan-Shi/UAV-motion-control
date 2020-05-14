@@ -47,14 +47,12 @@ for k = 1:length(tspan)
     v_c = quad_a.velocity + randn(1)*noise;
     omg_c = quad_a.Omega + randn(1)*noise;
 
+    % 0,0: yaw, yaw_dot
     [u1,u2] = controller(p,v,a,J,yaw,yawd,p_c, v_c, quad_a.attitude, omg_c, quad_a.m, quad_a.g, 0.5,0.5,1,1);
     
     rotorSpeeds = get_rotorspeed(u1,u2,quad_a.k,quad_a.L,quad_a.b);
     
     quad_a.updateState(rotorSpeeds);
-    
-    yaw_d(:,k) = yaw;
-    yawd_d(:,k) = yawd;
     
     % static_quadrotor_plot(quad_a.position, quad_a.attitude);
     % hold on
@@ -91,11 +89,15 @@ subplot(4,2,4)
 plot(tspan, traj(3,:), tspan, pt(3,:))
 xlabel('t'); ylabel('z'); legend('actual', 'desired')
 title('z coordinates');
-subplot(4,2,5)
+subplot(2,2,2)
+plot3(traj_d(1,:), traj_d(2,:), traj_d(3,:))
+view(45,45)
+title('desired curve')
+subplot(2,2,3)
 plot(tspan,yaw_d,tspan,quad_a.Omega_H(2,2:end))
 legend('des','act')
 title('yaw')
-subplot(4,2,6)
+subplot(2,2,4)
 plot(tspan,yawd_d,tspan,yaw_d)
 grid on
 legend('yawd','yaw')
