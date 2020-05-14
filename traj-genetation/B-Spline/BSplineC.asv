@@ -1,0 +1,23 @@
+function [p_u,v_u,a_u,j_u] = BSpline(P,k,t)
+
+[p_u,NodeVector] = BSplineC(P,k,t);
+    
+for i = 0:n-1
+        Q(:,i+1) = k/(NodeVector(i+k+1)-NodeVector(i+1))*(P(:,i+2)-P(:,i+1));
+        Nikv(i+1,1) = BaseFunction(i+1,k-1,u(j),NodeVector);
+    end
+    v_u(:,j) = (u(end)-u(1))/T*Q*Nikv;
+    
+    for i = 0:n-2
+        Q2(:,i+1) = k/(NodeVector(i+k+1)-NodeVector(i+1))*(Q(:,i+2)-Q(:,i+1));
+        Nika(i+1,1) = BaseFunction(i+2,k-2,u(j),NodeVector);
+    end
+    a_u(:,j) = (u(end)-u(1))/T*Q2*Nika;
+
+    for i = 0:n-3
+        Q3(:,i+1) = k/(NodeVector(i+k+1)-NodeVector(i+1))*(Q2(:,i+2)-Q2(:,i+1));
+        Nikj(i+1,1) = BaseFunction(i+3,k-3,u(j),NodeVector);
+    end
+    j_u(:,j) = (u(end)-u(1))/T*Q3*Nikj;
+end
+end
