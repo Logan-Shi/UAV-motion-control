@@ -1,21 +1,32 @@
-clear all;
+dt = 2;
+duration = 10;
+tspan = 0:dt:duration;
+
 %input
-pointNum = 6;
-k = 2;
-P = [9.036145, 21.084337, 37.607573, 51.893287, 61.187608;
-    51.779661, 70.084746, 50.254237, 69.745763, 49.576271;
-        10         -10           20        -20       30];
-angle = (1:pointNum)*pi/pointNum;
+k = 3;
+n = 5;
+P(:,1) = zeros(3,1);
+for i = 2:n
+    P(:,i) = i*ones(3,1);
+end
+pointNum = size(P,2);
+angle = (0:pointNum-1)*pi/pointNum;
 R = zeros(3,3,pointNum);
 for i=1:pointNum
-    R(:,:,i) = rotZ(angle(i))*rotY(angle(i))*rotX(angle(i));
+    R(:,:,i) = rotZ(angle(i))*rotY(0)*rotX(0);
 end
+[pt,vt,at,Jt] = BSplineC(P,k,tspan);
+[Yt,Ydt,Rt,Pt] = OriInter(R,k,tspan);
 
-% function demo
-Tf = 10;
-u = linspace(0,Tf,100);
-[y_u,yd_u] = OriInter(R,3,u);
-
-plot(u,y_u,u,yd_u)
-legend('yaw','yawd')
-title('yaw desired')
+plot3(pt(1,:),pt(2,:),pt(3,:),'c');
+hold on
+for i=1:length(tspan)
+    Tc(:,:,i) = eye(4);
+    Tc(1:3,1:3,i) = rotZ(Yt(i))*rotY(Pt(i))*rotX(Rt(i));
+    Tc(1:3,4,i) = pt(:,i);
+    trplot(Tc(:,:,i),'rgb','arrow','length',0.3);
+end
+axis([-1 6 -1 6 -1 6]);
+xlabel('x');ylabel('y');zlabel('z')
+grid on
+title('desired traj')
