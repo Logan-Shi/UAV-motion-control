@@ -47,7 +47,7 @@ for k = 1:length(tspan)
     v_c = quad_a.velocity + randn(1)*noise;
     omg_c = quad_a.Omega + randn(1)*noise;
 
-    [u1,u2] = controller(p,v,a,J,yaw,yawd,p_c, v_c, quad_a.attitude, omg_c, quad_a.m, quad_a.g, 0.5,0.5,1,1);
+    [u1,u2] = controller(p,v,a,J,yaw,yawd,p_c, v_c, quad_a.attitude, omg_c, quad_a.m, quad_a.g, 0.5,0.5,0.1,0);
     
     rotorSpeeds = get_rotorspeed(u1,u2,quad_a.k,quad_a.L,quad_a.b);
     

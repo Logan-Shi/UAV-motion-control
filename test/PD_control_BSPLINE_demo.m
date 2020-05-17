@@ -11,16 +11,20 @@ tspan = 0:dt:duration;
 
 %input
 k = 3;
-n = 5;
-P(:,1) = zeros(3,1);
-for i = 2:n
-    P(:,i) = i*ones(3,1);
+% n = 5;
+% P(:,1) = zeros(3,1);
+% for i = 2:n
+%     P(:,i) = i*ones(3,1);
+% end
+load waypts;
+for i = 1:size(waypts,2)
+    P(:,i) =  waypts(:,i);
 end
 pointNum = size(P,2);
 angle = (0:pointNum-1)*pi/pointNum;
 R = zeros(3,3,pointNum);
 for i=1:pointNum
-    R(:,:,i) = rotZ(angle(i))*rotY(0)*rotX(0);
+    R(:,:,i) = rotZ(angle(i)/4)*rotY(0)*rotX(0);
 end
 [pt,vt,at,Jt] = BSplineC(P,k,tspan);
 [Yt,Ydt,Rt,Pt] = OriInter(R,k,tspan);
@@ -48,7 +52,7 @@ for k = 1:length(tspan)
     v_c = quad_a.velocity + randn(1)*noise;
     omg_c = quad_a.Omega + randn(1)*noise;
 
-    [u1,u2] = controller(p,v,a,J,yaw,yd,p_c, v_c, quad_a.attitude, omg_c, quad_a.m, quad_a.g, 0.5,0.5,0.1,1);
+    [u1,u2] = controller(p,v,a,J,yaw,yd,p_c, v_c, quad_a.attitude, omg_c, quad_a.m, quad_a.g,0.8,0.1,0.1,0.2);
     
     spd = get_rotorspeed(u1,u2,quad_a.k,quad_a.L,quad_a.b);
     
@@ -73,7 +77,7 @@ legend('act','des')
 title('actual curve')
 
 subplot(2,2,3)
-plot(tspan,yaw_d,tspan,quad_a.Omega_H(2,2:end))
+plot(tspan,yaw_d,tspan,quad_a.euler_H(3,2:end))
 legend('des','act')
 title('yaw')
 subplot(2,2,4)
