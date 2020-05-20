@@ -22,7 +22,7 @@ Ri=cal_R(ti,T,R,a,b,c);
 
 E=zeros(3,length(ti));
 for j=1:size(Ri,3)
-    E(:,j)=rotm2eul(Ri(:,:,j),"XYZ");
+    E(:,j)=rotm2eul(Ri(:,:,j),'XYZ');
 end
 
 hold on

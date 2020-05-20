@@ -1,4 +1,4 @@
-dt = 2;
+dt = 0.5;
 duration = 10;
 tspan = 0:dt:duration;
 
@@ -7,13 +7,13 @@ k = 3;
 n = 5;
 P(:,1) = zeros(3,1);
 for i = 2:n
-    P(:,i) = i*ones(3,1);
+    P(:,i) = i*rand(3,1);
 end
 pointNum = size(P,2);
 angle = (0:pointNum-1)*pi/pointNum;
 R = zeros(3,3,pointNum);
 for i=1:pointNum
-    R(:,:,i) = rotZ(angle(i))*rotY(0)*rotX(0);
+    R(:,:,i) = rotZ(angle(i))*rotY(angle(i)/3)*rotX(0);
 end
 [pt,vt,at,Jt] = BSplineC(P,k,tspan);
 [Yt,Ydt,Rt,Pt] = OriInter(R,k,tspan);

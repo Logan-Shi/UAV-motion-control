@@ -23,21 +23,35 @@ classdef Quadrotor < handle
     %       eg: quad.position_H is the history of the quad position
     
     properties (SetAccess=public)
-        % state of a quadrotor
-        % attitude: rotation matrix from body to world
-        position; velocity; acceleration;
-        attitude; Omega; Omega_dot; euler;
-
-        % history of the quadrotor
-        position_H; velocity_H; acceleration_H;
-        attitude_H; Omega_H; Omega_dot_H; euler_H;
-
         % simulation interval
         dt = 0.0005;
-
+        
+        % quad noise:
+        % dynamics noise: noise in the dynamics model
+        % sensor noise: noise in the sensor
+        dynamics_noise = [];
+        sensor_noise = [];
+        
+        % quad noise type: currently set to normal distribution
+        dynamics_noise_type = @(t)(t.*randn(size(t)));
+        sensor_noise_type = @(t)(t.*randn(size(t)));
+        
     end
     
     properties (SetAccess=private)
+        % private access means read-only access
+
+        % history of the quadrotor
+        % these value have NO sensor noises, in order to track the actual position
+        position_H; velocity_H; acceleration_H;
+        attitude_H; Omega_H; Omega_dot_H; euler_H;
+
+        % state of a quadrotor
+        % attitude: rotation matrix from body to world
+        % set this to private to add noise whenever try to get them.
+        position; velocity; acceleration;
+        attitude; Omega; Omega_dot; euler;
+        
         % paramters of a quadrotor
         % explaned below in func params=load_params
         m; g = 9.8; k; kd; I; L; b; 
