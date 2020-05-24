@@ -17,7 +17,7 @@ for j = 1:3
     end
     for i = 1:N-1
         vec_u(i) = v_u(j,i+1)/kap_sq(i+2)/4/Ts;
-        vec_l(i) = -v_u(j,i+1)/kap_sq(i)/4/Ts;
+        vec_l(i) = -v_u(j,i+2)/kap_sq(i+1)/4/Ts;
     end
     A(((j-1)*N+1):j*N,1:N) = diag(vec_m)+diag(vec_u,1)+diag(vec_l,-1);
 end
