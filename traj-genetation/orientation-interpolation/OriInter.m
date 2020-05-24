@@ -2,7 +2,7 @@ function [y_u,yd_u,r_u,p_u] = OriInter(R,k,t)
 
 [r,p,y] = R2rpy(R);
 
-[y_u,yd_u] = BSplineC(y,k,t);
+[y_u,yd_u] = BSplineC(y,k,t,1,0);
 r_u = BSpline(r,k,t);
 p_u = BSpline(p,k,t);
 

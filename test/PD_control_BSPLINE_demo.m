@@ -10,23 +10,21 @@ duration = 10;
 tspan = 0:dt:duration;
 
 %input
-k = 3;
+k = 5;
 % n = 5;
 % P(:,1) = zeros(3,1);
 % for i = 2:n
 %     P(:,i) = i*ones(3,1);
 % end
 load waypts;
-for i = 1:size(waypts,2)
-    P(:,i) =  waypts(:,i);
-end
+P =  waypts;
 pointNum = size(P,2);
 angle = (0:pointNum-1)*pi/pointNum;
 R = zeros(3,3,pointNum);
 for i=1:pointNum
     R(:,:,i) = rotZ(angle(i)/4)*rotY(0)*rotX(0);
 end
-[pt,vt,at,Jt] = BSplineC(P,k,tspan);
+[pt,vt,at,Jt] = BSplineC(P,k,tspan,1,0);
 [Yt,Ydt,Rt,Pt] = OriInter(R,k,tspan);
 
 subplot(2,2,2)
