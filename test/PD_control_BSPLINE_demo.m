@@ -25,17 +25,17 @@ for i=1:pointNum
     R(:,:,i) = rotZ(angle(i)/4)*rotY(0)*rotX(0);
 end
 [pt,vt,at,Jt] = BSplineC(P,k,tspan,1,0);
-[Yt,Ydt,Rt,Pt] = OriInter(R,k,tspan);
+% [Yt,Ydt,Rt,Pt] = OriInter(R,k,tspan);
 
 subplot(2,2,2)
 plot3(pt(1,:),pt(2,:),pt(3,:),'c');
 hold on
-for i=1:length(tspan)
-    Tc(:,:,i) = eye(4);
-    Tc(1:3,1:3,i) = rotZ(Yt(i))*rotY(Pt(i))*rotX(Rt(i));
-    Tc(1:3,4,i) = pt(:,i);
-    trplot(Tc(:,:,i),'rgb','arrow','length',0.3);
-end
+% for i=1:length(tspan)
+%     Tc(:,:,i) = eye(4);
+%     Tc(1:3,1:3,i) = rotZ(Yt(i))*rotY(Pt(i))*rotX(Rt(i));
+%     Tc(1:3,4,i) = pt(:,i);
+%     trplot(Tc(:,:,i),'rgb','arrow','length',0.3);
+% end
 axis([-1 6 -1 6 -1 6]);
 grid on
 title('desired traj')
@@ -43,7 +43,7 @@ title('desired traj')
 %%
 for k = 1:length(tspan)
     t = tspan(k);
-    p = pt(:,k); v = vt(:,k); a = at(:,k); J = Jt(:,k); yaw = Yt(k); yd = Ydt(k);
+    p = pt(:,k); v = vt(:,k); a = at(:,k); J = Jt(:,k); yaw = 0; yd = 0;
     
     noise = 0;
     p_c = quad_a.position + randn(1)*noise;
@@ -59,7 +59,9 @@ for k = 1:length(tspan)
     traj_d(:,k) = p;
     yaw_d(:,k) = yaw;
     yawd_d(:,k) = yd;
-    % static_quadrotor_plot(quad_a.position, quad_a.attitude);
+%     plot3(pt(1,:),pt(2,:),pt(3,:),'c');
+%     hold on
+%     static_quadrotor_plot(quad_a.position, quad_a.attitude);
     % hold on
     % hold off
     % pause(dt)

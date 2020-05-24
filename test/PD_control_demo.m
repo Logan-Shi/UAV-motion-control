@@ -32,6 +32,15 @@ a1 = [0,0,0];
 
 [pt,vt,at,Jt] = min_snap_simple_fcn(waypts,v0,a0,v1,a1,end_t,tspan);
 [Rt,Rdt] = jtraj(0,pi,tspan);
+% figure()
+%     plot(tspan,pt(1,:))
+%     hold on
+%     plot(tspan,vt(1,:))
+%     plot(tspan,at(1,:))
+%     plot(tspan,Jt(1,:))
+%     legend('pos','vel','acc','jer')
+%     xlabel('x');ylabel('y');
+%     title('higher derivatives')
 
 % figure()
 % plot3(pt(1,:), pt(2,:), pt(3,:), 'b');
@@ -56,9 +65,10 @@ for k = 1:length(tspan)
     yaw_d(:,k) = yaw;
     yawd_d(:,k) = yawd;
     
-    % static_quadrotor_plot(quad_a.position, quad_a.attitude);
-    % hold on
-    % plot3(pt(1,:), pt(2,:), pt(3,:), 'b');
+    plot3(pt(1,:),pt(2,:),pt(3,:),'c');
+    hold on
+    static_quadrotor_plot(quad_a.position, quad_a.attitude);
+    
     % plot3(quad_a.position_H(1,:), quad_a.position_H(2,:), quad_a.position_H(3,:),'r');
     % title('real time result');
     % hold off

@@ -4,11 +4,11 @@ k = 5;
 n = 6;
 P(:,1) = zeros(3,1);
 for i = 2:n
-    P(:,i) = i*rand(3,1);
+    P(:,i) = i*ones(3,1);
 end
 
-load waypts
-P = waypts;
+% load waypts
+% P = waypts;
 
 % function demo
 t = linspace(0,10,100);

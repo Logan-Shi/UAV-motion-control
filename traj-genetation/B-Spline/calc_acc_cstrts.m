@@ -5,7 +5,7 @@ A = zeros(3*N,N);
 
 kap_sq = zeros(1,N+2);
 for i = 1:N+2
-    kap_sq(i) = sum(v_u(:,i).^2);
+    kap_sq(i) = norm(v_u(:,i))^2;
 end
 
 vec_m = zeros(1,N);
@@ -13,13 +13,11 @@ vec_u = zeros(1,N-1);
 vec_l = zeros(1,N-1);
 for j = 1:3
     for i = 1:N
-        vec_m(i) = a_u(j,i)/kap_sq(i);
-        if i == 1
-            continue
-        else
-            vec_u(i-1) = v_u(j,i)*kap_sq(i+1)/4/Ts;
-            vec_l(i-1) = -v_u(j,i)*kap_sq(i-1)/4/Ts;
-        end
+        vec_m(i) = a_u(j,i+1)/kap_sq(i+1);
+    end
+    for i = 1:N-1
+        vec_u(i) = v_u(j,i+1)/kap_sq(i+2)/4/Ts;
+        vec_l(i) = -v_u(j,i+1)/kap_sq(i)/4/Ts;
     end
     A(((j-1)*N+1):j*N,1:N) = diag(vec_m)+diag(vec_u,1)+diag(vec_l,-1);
 end
