@@ -3,8 +3,8 @@ clear all;
 k = 5;
 n = 6;
 P(:,1) = zeros(3,1);
-for i = 2:n
-    P(:,i) = i*ones(3,1);
+for i = 1:n
+    P(:,i) = (i-1)*ones(3,1);
 end
 
 % load waypts
