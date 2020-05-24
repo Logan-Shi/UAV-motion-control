@@ -26,16 +26,17 @@ for i = 1:N
     V(i) = sqrt(Vsq_u(i));
     v_u(:,i) = v_u(:,i)/norm(v_u(:,i))*V(i);
 end
-A = FDMinter(t,V);
-a_u = BSpline(Q2,k-2,t);
-for i = 1:N
-    a_u(:,i) = a_u(:,i)/norm(a_u(:,i))*A(i);
-end
-J = FDMinter(t,A);
-j_u = BSpline(Q3,k-3,t);
-for i = 1:N
-    j_u(:,i) = j_u(:,i)/norm(j_u(:,i))*J(i);
-end
+a_u = FDMinter(t,v_u);
+j_u = FDMinter(t,a_u);
+% a_u = BSpline(Q2,k-2,t);
+% for i = 1:N
+%     a_u(:,i) = a_u(:,i)/norm(a_u(:,i))*A(i);
+% end
+% J = FDMinter(t,A);
+% j_u = BSpline(Q3,k-3,t);
+% for i = 1:N
+%     j_u(:,i) = j_u(:,i)/norm(j_u(:,i))*J(i);
+% end
 
 if Graph
     % graphing

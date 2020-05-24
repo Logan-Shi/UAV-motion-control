@@ -11,13 +11,13 @@ tspan = 0:dt:duration;
 
 %input
 k = 5;
-% n = 5;
-% P(:,1) = zeros(3,1);
-% for i = 2:n
-%     P(:,i) = i*ones(3,1);
-% end
-load waypts;
-P =  waypts;
+n = k+1;
+P(:,1) = zeros(3,1);
+for i = 2:n
+    P(:,i) = i*ones(3,1);
+end
+% load waypts;
+% P =  waypts;
 pointNum = size(P,2);
 angle = (0:pointNum-1)*pi/pointNum;
 R = zeros(3,3,pointNum);
@@ -59,9 +59,9 @@ for k = 1:length(tspan)
     traj_d(:,k) = p;
     yaw_d(:,k) = yaw;
     yawd_d(:,k) = yd;
-%     plot3(pt(1,:),pt(2,:),pt(3,:),'c');
-%     hold on
-%     static_quadrotor_plot(quad_a.position, quad_a.attitude);
+    plot3(pt(1,:),pt(2,:),pt(3,:),'c');
+    hold on
+    static_quadrotor_plot(quad_a.position, quad_a.attitude);
     % hold on
     % hold off
     % pause(dt)
