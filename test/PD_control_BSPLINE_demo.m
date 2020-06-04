@@ -3,7 +3,7 @@ clear all; close all; clc
 params = load_params();
 quad_a = Quadrotor(params);
 
-dt = 0.1;
+dt = 0.01;
 quad_a.dt = dt;
 
 duration = 10;
@@ -26,7 +26,7 @@ R = zeros(3,3,pointNum);
 for i=1:pointNum
     R(:,:,i) = rotZ(angle(i)/4)*rotY(0)*rotX(0);
 end
-[pt,vt,at,Jt] = BSplineC(P,k,tspan);
+[pt,vt,at,Jt] = BSplineC(P,k,tspan,1,0);
 [Yt,Ydt,Rt,Pt] = OriInter(R,k,tspan);
 
 subplot(2,2,2)
@@ -36,7 +36,7 @@ for i=1:length(tspan)
     Tc(:,:,i) = eye(4);
     Tc(1:3,1:3,i) = rotZ(Yt(i))*rotY(Pt(i))*rotX(Rt(i));
     Tc(1:3,4,i) = pt(:,i);
-    trplot(Tc(:,:,i),'rgb','arrow','length',0.3);
+%     trplot(Tc(:,:,i),'rgb','arrow','length',0.3);
 end
 axis([-1 6 -1 6 -1 6]);
 grid on
@@ -45,14 +45,14 @@ title('desired traj')
 %%
 for k = 1:length(tspan)
     t = tspan(k);
-    p = pt(:,k); v = vt(:,k); a = at(:,k); J = Jt(:,k); yaw = Yt(k); yd = Ydt(k);
+    p = pt(:,k); v = vt(:,k); a = at(:,k); J = Jt(:,k); yaw = 0; yd = 0;
     
     noise = 0;
     p_c = quad_a.position + randn(1)*noise;
     v_c = quad_a.velocity + randn(1)*noise;
     omg_c = quad_a.Omega + randn(1)*noise;
 
-    [u1,u2] = controller(p,v,a,J,yaw,yd,p_c, v_c, quad_a.attitude, omg_c, quad_a.m, quad_a.g,0.8,0.1,0.1,0.2);
+    [u1,u2] = controller(p,v,a,J,yaw,yd,p_c, v_c, quad_a.attitude, omg_c, quad_a.m, quad_a.g,0.5,0.5,diag([1,1.5,1.2]),diag([0.1,0.1,1.2]));
     
     spd = get_rotorspeed(u1,u2,quad_a.k,quad_a.L,quad_a.b);
     

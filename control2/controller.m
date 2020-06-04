@@ -51,5 +51,5 @@ function [u1,u2]=controller(ksi_desired, ksi_desired_dot, ksi_desired_dot2, ksi_
     omega_desired=[p_desired;q_desired;r_desired];
 
     e_omega=omega-omega_desired;
-    u2=-Kp_omega*e_omega-Kd_omega*e_R;
+    u2=-Kd_omega*e_omega-Kp_omega*e_R;
 end
