@@ -11,7 +11,7 @@ load waypts
 P = waypts;
 
 % function demo
-t = linspace(0,5,1000);
+t = linspace(0,5,100);
 isOnPts = 1;
 isGraph = 1;
 [p_u,v_u,a_u,j_u] = BSplineC(P,k,t,isOnPts,isGraph);

@@ -26,7 +26,7 @@ R = zeros(3,3,pointNum);
 for i=1:pointNum
     R(:,:,i) = rotZ(angle(i)/4)*rotY(0)*rotX(0);
 end
-[pt,vt,at,Jt] = BSplineC(P,k,tspan,1,0);
+[pt,vt,at,Jt] = BSplineC(P,k,tspan,1,1);
 [Yt,Ydt,Rt,Pt] = OriInter(R,k,tspan);
 
 subplot(2,2,2)
@@ -67,6 +67,7 @@ for k = 1:length(tspan)
     % pause(dt)
 end
 
+figure()
 traj = quad_a.position_H;
 subplot(2,2,1)
 plot3(traj(1,:), traj(2,:), traj(3,:), 'b')

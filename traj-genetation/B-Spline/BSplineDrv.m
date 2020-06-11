@@ -1,6 +1,6 @@
-function [Q,Q2,Q3,v_u,a_u] = BSplineDrv(P,n,k,t,NodeVector)
+function [p_u,v_u,a_u] = BSplineDrv(P,n,k,t,NodeVector)
 u = linspace(0,1,length(t));
-NodeVector4v = NodeVector(2:end-1);
+[p_u,NodeVector4v] = BSpline(P,k,u);
 % ÇúÏßµ¼Ê¸¼ÆËã
 for i = 0:n-1
     Q(:,i+1) = k/(NodeVector4v(i+k+1)-NodeVector4v(i+1))*(P(:,i+2)-P(:,i+1));

@@ -5,14 +5,17 @@ if OnPts % 经过way points，控制点修正
     [P,P2] = on_way_pts(P,n,k,NodeVector);
 end
 
-[Q,Q2,Q3,v_u,a_u] = BSplineDrv(P,n,k,t,NodeVector);
+[p_u,v_u,a_u] = BSplineDrv(P,n,k,t,NodeVector);
 
 % 速度规划
-Vsq_u = VelPlan(t,v_u,a_u);
+Vsq_u = VelPlan(t,p_u,v_u,a_u);
 N = length(t);
 u = linspace(0,1,N);
 figure()
 plot(u,Vsq_u);
+title('V(u)')
+xlabel('u');
+ylabel('V(u)');
 ut = zeros(1,N);
 for i = 1:N-1
     if i == 1
@@ -48,7 +51,7 @@ p_u = BSpline(P,k,u_appliedt);
 v_u = FDMinter3(t,p_u);
 a_u = FDMinter3(t,v_u);
 j_u = FDMinter3(t,a_u);
-
+figure()
 if Graph
     % graphing
     subplot(1,2,1)
