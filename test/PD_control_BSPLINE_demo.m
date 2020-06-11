@@ -10,7 +10,7 @@ duration = 10;
 tspan = 0:dt:duration;
 
 %input
-k = 3;
+k = 4;
 % n = 5;
 % P(:,1) = zeros(3,1);
 % for i = 2:n

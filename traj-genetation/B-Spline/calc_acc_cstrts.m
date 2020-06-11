@@ -1,6 +1,6 @@
-function A = calc_acc_cstrts(v_u,a_u,t)
-N = length(t)-2;
-Ts = t(2) - t(1);
+function A = calc_acc_cstrts(v_u,a_u,u)
+N = length(u)-2;
+den = u(2) - u(1);
 A = zeros(3*N,N);
 
 kap_sq = zeros(1,N+2);
@@ -16,8 +16,8 @@ for j = 1:3
         vec_m(i) = a_u(j,i+1)/kap_sq(i+1);
     end
     for i = 1:N-1
-        vec_u(i) = v_u(j,i+1)/kap_sq(i+2)/4/Ts;
-        vec_l(i) = -v_u(j,i+2)/kap_sq(i+1)/4/Ts;
+        vec_u(i) = v_u(j,i+1)/kap_sq(i+2)/4/den;
+        vec_l(i) = -v_u(j,i+2)/kap_sq(i+1)/4/den;
     end
     A(((j-1)*N+1):j*N,1:N) = diag(vec_m)+diag(vec_u,1)+diag(vec_l,-1);
 end

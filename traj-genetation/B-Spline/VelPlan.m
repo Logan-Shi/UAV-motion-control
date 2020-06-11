@@ -1,6 +1,6 @@
 function Vsq_u = VelPlan(t,v_u,a_u)
-Vsq_max = 1;%m^2/s^2
-Track_err_max = 0.1;%m
+Vsq_max = 5;%m^2/s^2
+Track_err_max = 0.05;%m
 Acc_x_max = 2;%m/s^2
 Acc_y_max = 2;%m/s^2
 Acc_z_max = 2;%m/s^2

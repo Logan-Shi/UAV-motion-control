@@ -1,6 +1,6 @@
-clear all;
+% clear all;
 %input
-k = 5;
+k = 4;
 n = 6;
 P(:,1) = zeros(3,1);
 for i = 1:n
@@ -11,7 +11,7 @@ load waypts
 P = waypts;
 
 % function demo
-t = linspace(0,10,100);
+t = linspace(0,5,1000);
 isOnPts = 1;
 isGraph = 1;
 [p_u,v_u,a_u,j_u] = BSplineC(P,k,t,isOnPts,isGraph);

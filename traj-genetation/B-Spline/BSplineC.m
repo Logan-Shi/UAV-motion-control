@@ -9,21 +9,45 @@ end
 
 % 速度规划
 Vsq_u = VelPlan(t,v_u,a_u);
-
 N = length(t);
-Ts = t(2)-t(1);
+u = linspace(0,1,N);
+figure()
+plot(u,Vsq_u);
 ut = zeros(1,N);
-for i = 2:N
-    V = sqrt(Vsq_u(i-1));
-    dC = v_u(:,i-1);
-    ddC = a_u(:,i-1);
-    ut(i) = ut(i-1)+V*Ts/norm(dC)-V^2*Ts^2*dot(dC,ddC)/2/(norm(dC)^4);
+for i = 1:N-1
+    if i == 1
+        V = sqrt(Vsq_u(2));
+        dC = v_u(:,2);
+        ddC = a_u(:,2);
+        AA = V^2*dot(dC,ddC)/2/(norm(dC)^4);
+        BB = V/norm(dC);
+        CC = u(2)-u(1);
+        Ts1 = -(-BB+sqrt(BB^2-4*AA*CC))/2/AA;
+        Ts2 = -(-BB-sqrt(BB^2-4*AA*CC))/2/AA;
+        Ts = min(Ts1,Ts2);
+    else
+        V = sqrt(Vsq_u(i));
+        dC = v_u(:,i);
+        ddC = a_u(:,i);
+        AA = V^2*dot(dC,ddC)/2/(norm(dC)^4);
+        BB = -V/norm(dC);
+        CC = u(2)-u(1);
+        Ts1 = (-BB+sqrt(BB^2-4*AA*CC))/2/AA;
+        Ts2 = (-BB-sqrt(BB^2-4*AA*CC))/2/AA;
+        Ts = min(Ts1,Ts2);
+    end
+    if AA<0
+        Ts = max(Ts1,Ts2);
+    end
+    ut(i+1) = ut(i)+Ts;
 end
-ut = ut./ut(end);
-p_u = BSpline(P,k,ut);
-v_u = FDMinter(t,p_u);
-a_u = FDMinter(t,v_u);
-j_u = FDMinter(t,a_u);
+figure()
+plot(ut,u)
+u_appliedt = pchip(ut,u,t);
+p_u = BSpline(P,k,u_appliedt);
+v_u = FDMinter3(t,p_u);
+a_u = FDMinter3(t,v_u);
+j_u = FDMinter3(t,a_u);
 
 if Graph
     % graphing
@@ -53,7 +77,7 @@ if Graph
     hold on
     plot(t,v_u(1,:))
     plot(t,a_u(1,:))
-    plot(t,j_u(1,:))
+%     plot(t,j_u(1,:))
     legend('pos','vel','acc','jer')
     xlabel('x');ylabel('y');
     title('higher derivatives')
