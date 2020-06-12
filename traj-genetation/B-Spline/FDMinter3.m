@@ -1,5 +1,5 @@
 function df = FDMinter3(t,f)
-df = zeros(3,length(t));
+df = zeros(size(f,1),length(t));
 for i = 2:length(t)-1%中心差分求插值
     df(:,i) = (f(:,i+1)-f(:,i-1))/(t(i+1)-t(i-1));
 end

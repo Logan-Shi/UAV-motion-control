@@ -3,7 +3,7 @@ function Nik_u = BaseFunction(i, k , u, NodeVector)
 % 计算基函数Ni,k(u),NodeVector为节点向量
 
 if k == 0       % 0次B样条
-    if (u >= NodeVector(i+1)) && (u <= NodeVector(i+2))
+    if (u >= NodeVector(i+1)) && (u < NodeVector(i+2)) || ((u >= NodeVector(i+1)) && (u <= NodeVector(i+2)) && u == 1)
         Nik_u = 1.0;
     else
         Nik_u = 0.0;

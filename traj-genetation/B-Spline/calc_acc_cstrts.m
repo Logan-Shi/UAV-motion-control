@@ -20,9 +20,9 @@ for j = 1:3
     end
     tmp(2:end-1,:,j) = diag(vec_m)+diag(vec_u,1)+diag(vec_l,-1);
     first = zeros(1,N);
-    first(1) = v_u(j,2)^2/kap_sq(2)/abs(p_u(j,2))/2;
+    first(1) = max(v_u(j,2)^2/kap_sq(2)/abs(p_u(j,2))/2,1);
     last = zeros(1,N);
-    last(end) = v_u(j,end-1)^2/kap_sq(end-1)/abs(p_u(j,end-1))/2;
+    last(end) = max(v_u(j,end-1)^2/kap_sq(end-1)/abs(p_u(j,end-1))/2*140,1);
     tmp(1,:,j) = first;
     tmp(end,:,j) = last;
 end

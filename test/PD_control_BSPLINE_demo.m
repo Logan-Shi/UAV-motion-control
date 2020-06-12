@@ -11,15 +11,16 @@ tspan = 0:dt:duration;
 
 %input
 k = 4;
-% n = 5;
-% P(:,1) = zeros(3,1);
-% for i = 2:n
-%     P(:,i) = i*ones(3,1);
-% end
-load waypts;
-for i = 1:size(waypts,2)
-    P(:,i) =  waypts(:,i);
+n = 6;
+P(:,1) = zeros(3,1);
+for i = 1:n
+    P(1,i) = cos((i-1)/n*2*pi)-1;
+    P(2,i) = sin((i-1)/n*2*pi);
+    P(3,i) = 1;
 end
+P = [[0;0;0],P];
+load waypts;
+P = waypts;
 pointNum = size(P,2);
 angle = (0:pointNum-1)*pi/pointNum;
 R = zeros(3,3,pointNum);
@@ -27,20 +28,6 @@ for i=1:pointNum
     R(:,:,i) = rotZ(angle(i)/4)*rotY(0)*rotX(0);
 end
 [pt,vt,at,Jt] = BSplineC(P,k,tspan,1,1);
-[Yt,Ydt,Rt,Pt] = OriInter(R,k,tspan);
-
-subplot(2,2,2)
-plot3(pt(1,:),pt(2,:),pt(3,:),'c');
-hold on
-for i=1:length(tspan)
-    Tc(:,:,i) = eye(4);
-    Tc(1:3,1:3,i) = rotZ(Yt(i))*rotY(Pt(i))*rotX(Rt(i));
-    Tc(1:3,4,i) = pt(:,i);
-%     trplot(Tc(:,:,i),'rgb','arrow','length',0.3);
-end
-axis([-1 6 -1 6 -1 6]);
-grid on
-title('desired traj')
 
 %%
 for k = 1:length(tspan)
