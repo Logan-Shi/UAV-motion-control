@@ -20,7 +20,12 @@ function [a,b,c]=cubic_spline(T,R,omega0,alpha0)
         ns=norm(s);
         t=3*a(:,i-1)+2*b(:,i-1)+c(:,i-1);
         u=6*a(:,i-1)+2*b(:,i-1);
-        c(:,i)=(eye(3)-(1-cos(ns)/(ns)^2)*hat(s)+(ns-sin(ns))/(ns)^3*(hat(s))^2)*t;
+%          c(:,i)=(eye(3)-(1-cos(ns)/(ns)^2)*hat(s)+(ns-sin(ns))/(ns)^3*(hat(s))^2)*t;
+        
+        s2=r(:,i-1);
+        ns2=norm(s2);
+        c(:,i)=(eye(3)-(1-cos(ns2)/(ns2)^2)*hat(s2)+(ns2-sin(ns2))/(ns2)^3*(hat(s2))^2)*c(:,i-1);
+        
         b(:,i)=1/2*(u-dot(s,t)/(ns)^4*(2*cos(ns)+ns*sin(ns)-2)*cross(s,t)...
             -(1-cos(ns))/ns^2*cross(s,u)...
             +dot(s,t)/(ns)^5*(3*sin(ns)-ns*cos(ns)-2*ns)*(cross(s,cross(s,t)))...

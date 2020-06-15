@@ -13,9 +13,12 @@ T = 5;
 h=0.01;
 
 min_snap_simple(waypts,v0,a0,v1,a1,T,h)
+hold on
+min_energy_simple(waypts,v0,a0,v1,a1,T,h)
+legend('keyframes','min snap','min energy')
 
-r=0.2;
-min_snap_corridor(waypts,v0,a0,v1,a1,T,h,r)
+% r=0.2;
+% min_snap_corridor(waypts,v0,a0,v1,a1,T,h,r)
 
 psi_pts=linspace(0,pi/6,length(waypts));
 psi_dot_0 = 0;
