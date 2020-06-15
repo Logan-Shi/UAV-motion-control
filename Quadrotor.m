@@ -46,11 +46,17 @@ classdef Quadrotor < handle
         position_H; velocity_H; acceleration_H;
         attitude_H; Omega_H; Omega_dot_H; euler_H;
 
+        % new: exponential coordiate
+        expC_H;
+
         % state of a quadrotor
         % attitude: rotation matrix from body to world
         % set this to private to add noise whenever try to get them.
         position; velocity; acceleration;
         attitude; Omega; Omega_dot; euler;
+
+        % new: exponential coordinate
+        expC;
         
         % paramters of a quadrotor
         % explaned below in func params=load_params
@@ -97,7 +103,25 @@ classdef Quadrotor < handle
             Quad.attitude_H(:,:,Quad.current_step) = Quad.attitude;
             Quad.Omega_H(:,Quad.current_step) = Quad.Omega;
             Quad.euler_H(:,Quad.current_step) = Quad.euler;
-            
+        end
+
+        function updateStateExp(Quad, rotorSpeeds)
+            input2acc(Quad, rotorSpeeds);
+
+            expCdot = omega2expCdot(Quad.expC, Quad.Omega);
+            Quad.expC = Quad.expC + Quad.dt*expCdot;
+            Quad.attitude = exp2R(Quad.expC);
+            Quad.Omega = Quad.Omega + Quad.Omega_dot*Quad.dt;
+
+            Quad.position = Quad.position + Quad.velocity*Quad.dt;
+            Quad.velocity = Quad.velocity + Quad.acceleration*Quad.dt;
+
+            Quad.position_H(:,Quad.current_step) = Quad.position;
+            Quad.velocity_H(:,Quad.current_step) = Quad.velocity;
+            Quad.attitude_H(:,:,Quad.current_step) = Quad.attitude;
+            Quad.Omega_H(:,Quad.current_step) = Quad.Omega;
+            Quad.expC_H(:,Quad.current_step) = Quad.expC;
+
         end
 
         function params=getQuadParams(Quad)
@@ -134,6 +158,7 @@ classdef Quadrotor < handle
             Quad.Omega = [0,0,0].';
             Quad.Omega_dot = [0,0,0].';
             Quad.euler = [0,0,0].';
+            Quad.expC = [0,0,0].';
 
             Quad.position_H = [0,0,0].';
             Quad.velocity_H = [0,0,0].';
@@ -142,6 +167,7 @@ classdef Quadrotor < handle
             Quad.Omega_H = [0,0,0].';
             Quad.Omega_dot_H = [0,0,0].';
             Quad.euler_H = [0,0,0].';
+            Quad.expC_H = [0,0,0].';
             
         end
     end

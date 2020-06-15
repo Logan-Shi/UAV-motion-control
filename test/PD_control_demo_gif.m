@@ -1,6 +1,6 @@
 clear all; close all;
+addpath(genpath('..'));
 
-% addpath(genpath('..'))
 
 params = load_params();
 quad_a = Quadrotor(params); save_gif = false; use_bspline = true;
@@ -136,3 +136,5 @@ fprintf('Z Error: %.8f\n', z_err);
 fprintf('Yaw Error: %.8f\n', yaw_err);
 
 % rmpath(genpath('..'))
+
+rmpath(genpath('..'));

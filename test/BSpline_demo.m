@@ -1,4 +1,5 @@
 clear all;
+addpath(genpath('..'));
 %input
 k = 5;
 n = 6;
@@ -15,3 +16,4 @@ t = linspace(0,10,100);
 isOnPts = 1;
 isGraph = 1;
 [p_u,v_u,a_u,j_u] = BSplineC(P,k,t,isOnPts,isGraph);
+rmpath(genpath('..'));

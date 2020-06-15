@@ -1,5 +1,6 @@
 clear
 clc
+addpath(genpath('..'));
 waypts = [
     0,0,0;
     rand(1,3);
@@ -19,3 +20,4 @@ min_snap_simple(waypts,v0,a0,v1,a1,T,h)
 
 r=0.2;
 min_snap_corridor(waypts,v0,a0,v1,a1,T,h,r)
+rmpath(genpath('..'));

@@ -1,4 +1,5 @@
 clear all; close all;
+addpath(genpath('..'));
 
 params = load_params();
 quad_a = Quadrotor(params);
@@ -119,3 +120,5 @@ fprintf('Error: %.8f\n', err);
 fprintf('X Error: %.8f\n', x_err);
 fprintf('Y Error: %.8f\n', y_err);
 fprintf('Z Error: %.8f\n', z_err);
+
+rmpath(genpath('..'));

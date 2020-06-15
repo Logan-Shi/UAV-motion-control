@@ -1,3 +1,5 @@
+addpath(genpath('..'));
+
 dt = 0.5;
 duration = 10;
 tspan = 0:dt:duration;
@@ -30,3 +32,5 @@ axis([-1 6 -1 6 -1 6]);
 xlabel('x');ylabel('y');zlabel('z')
 grid on
 title('desired traj')
+
+rmpath(genpath('..'));

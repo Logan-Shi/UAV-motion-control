@@ -1,4 +1,5 @@
 clear all; close all; clc
+addpath(genpath('..'));
 
 params = load_params();
 quad_a = Quadrotor(params);
@@ -88,3 +89,5 @@ title('yaw desired')
 traj(:,1) = [];
 err = norm(traj - traj_d);
 fprintf('Error: %.8f\n', err);
+
+rmpath(genpath('..'));

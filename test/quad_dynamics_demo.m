@@ -1,5 +1,6 @@
 clear
 clc
+addpath(genpath('..'));
 
 %加载参数
 params=load_params();  %加载参数
@@ -60,3 +61,4 @@ end
 
 plot3(trajectories(1,:),trajectories(2,:),trajectories(3,:))
 view(45,45)
+rmpath(genpath('..'));
