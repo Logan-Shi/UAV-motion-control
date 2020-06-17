@@ -31,6 +31,9 @@ v1 = [0,0,0];
 a1 = [0,0,0];
 
 [pt,vt,at,Jt] = min_snap_simple_fcn(waypts,v0,a0,v1,a1,end_t,tspan);
+disp(['max vt' num2str(max(vt(1,:)))])
+disp(['max at' num2str(max(at(1,:)))])
+disp(['max jt' num2str(max(Jt(1,:)))])
 [Rt,Rdt] = jtraj(0,pi,tspan);
 
 % figure()
@@ -47,7 +50,7 @@ for k = 1:length(tspan)
     v_c = quad_a.velocity + randn(1)*noise;
     omg_c = quad_a.Omega + randn(1)*noise;
 
-    [u1,u2] = controller(p,v,a,J,yaw,yawd,p_c, v_c, quad_a.attitude, omg_c, quad_a.m, quad_a.g,0.5,0.5,diag([1,1.5,1.2]),diag([0.1,0.1,1.2]));
+    [u1,u2] = controller(p,v,a,J,yaw,yawd,p_c, v_c, quad_a.attitude, omg_c, quad_a.m, quad_a.g,1.5,1.5,diag([1,1.5,1.2]),diag([0.1,0.1,1.2]));
     
     rotorSpeeds = get_rotorspeed(u1,u2,quad_a.k,quad_a.L,quad_a.b);
     
@@ -69,33 +72,28 @@ traj = quad_a.position_H;
 traj(:,1) = [];
 
 figure()
+subplot(3,2,1)
 plot3(traj(1,:), traj(2,:), traj(3,:), 'b')
 hold on; grid on; view(45,45)
 plot3(pt(1,:), pt(2,:), pt(3,:), 'r')
 title('Simulation result'); legend('actual trajectory', 'desired trajectory')
-
-
-subplot(4,2,1)
-plot3(pt(1,:), pt(2,:), pt(3,:))
-view(45,45); grid on
-title('Desired trajectory')
-subplot(4,2,2)
+subplot(3,2,2)
 plot(tspan, traj(1,:), tspan, pt(1,:))
 xlabel('t'); ylabel('x'); legend('actual', 'desired')
 title('x coordinates');
-subplot(4,2,3)
+subplot(3,2,3)
 plot(tspan, traj(2,:), tspan, pt(2,:))
 xlabel('t'); ylabel('y'); legend('actual', 'desired')
 title('y coordinates');
-subplot(4,2,4)
+subplot(3,2,4)
 plot(tspan, traj(3,:), tspan, pt(3,:))
 xlabel('t'); ylabel('z'); legend('actual', 'desired')
 title('z coordinates');
-subplot(4,2,5)
+subplot(3,2,5)
 plot(tspan,yaw_d,tspan,quad_a.Omega_H(2,2:end))
 legend('des','act')
 title('yaw')
-subplot(4,2,6)
+subplot(3,2,6)
 plot(tspan,yawd_d,tspan,yaw_d)
 grid on
 legend('yawd','yaw')

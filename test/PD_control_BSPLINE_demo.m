@@ -27,7 +27,7 @@ R = zeros(3,3,pointNum);
 for i=1:pointNum
     R(:,:,i) = rotZ(angle(i)/4)*rotY(0)*rotX(0);
 end
-[pt,vt,at,Jt] = BSplineC(P,k,tspan,1,1);
+[pt,vt,at,Jt] = BSplineC(P,k,tspan,[3,4,3],1,1);
 
 %%
 for k = 1:length(tspan)
@@ -39,7 +39,7 @@ for k = 1:length(tspan)
     v_c = quad_a.velocity + randn(1)*noise;
     omg_c = quad_a.Omega + randn(1)*noise;
 
-    [u1,u2] = controller(p,v,a,J,yaw,yd,p_c, v_c, quad_a.attitude, omg_c, quad_a.m, quad_a.g,0.5,0.5,diag([1,1.5,1.2]),diag([0.1,0.1,1.2]));
+    [u1,u2] = controller(p,v,a,J,yaw,yd,p_c, v_c, quad_a.attitude, omg_c, quad_a.m, quad_a.g,6,2,diag([1.2,1.5,1.2]),diag([0.1,0.1,1.2]));
     
     spd = get_rotorspeed(u1,u2,quad_a.k,quad_a.L,quad_a.b);
     
@@ -54,25 +54,42 @@ for k = 1:length(tspan)
     % pause(dt)
 end
 
-figure()
 traj = quad_a.position_H;
-subplot(2,2,1)
-plot3(traj(1,:), traj(2,:), traj(3,:), 'b')
-hold on; grid on;
-plot3(traj_d(1,:), traj_d(2,:), traj_d(3,:), 'r')
-view(45,45)
-legend('act','des')
-title('actual curve')
+traj(:,1) = [];
 
-subplot(2,2,3)
-plot(tspan,yaw_d,tspan,quad_a.euler_H(3,2:end))
+figure()
+subplot(3,2,1)
+plot3(traj(1,:), traj(2,:), traj(3,:), 'b')
+hold on; grid on; view(45,45)
+plot3(pt(1,:), pt(2,:), pt(3,:), 'r')
+title('Simulation result'); legend('actual trajectory', 'desired trajectory')
+subplot(3,2,2)
+plot(tspan, traj(1,:), tspan, pt(1,:))
+xlabel('t'); ylabel('x'); legend('actual', 'desired')
+title('x coordinates');
+subplot(3,2,3)
+plot(tspan, traj(2,:), tspan, pt(2,:))
+xlabel('t'); ylabel('y'); legend('actual', 'desired')
+title('y coordinates');
+subplot(3,2,4)
+plot(tspan, traj(3,:), tspan, pt(3,:))
+xlabel('t'); ylabel('z'); legend('actual', 'desired')
+title('z coordinates');
+subplot(3,2,5)
+plot(tspan,yaw_d,tspan,quad_a.Omega_H(2,2:end))
 legend('des','act')
 title('yaw')
-subplot(2,2,4)
+subplot(3,2,6)
 plot(tspan,yawd_d,tspan,yaw_d)
 grid on
 legend('yawd','yaw')
 title('yaw desired')
-traj(:,1) = [];
-err = norm(traj - traj_d);
+
+err = norm(traj - pt);
+x_err = norm(traj(1,:) - pt(1,:));
+y_err = norm(traj(2,:) - pt(2,:));
+z_err = norm(traj(3,:) - pt(3,:));
 fprintf('Error: %.8f\n', err);
+fprintf('X Error: %.8f\n', x_err);
+fprintf('Y Error: %.8f\n', y_err);
+fprintf('Z Error: %.8f\n', z_err);

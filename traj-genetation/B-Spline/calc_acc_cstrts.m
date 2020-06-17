@@ -1,31 +1,37 @@
-function A = calc_acc_cstrts(p_u,v_u,a_u,u)
-N = length(u)-2;
-den = u(2) - u(1);
-tmp = zeros(N+2,N,3);
-kap_sq = zeros(1,N+2);
-for i = 1:N+2
+function [A,b,kap_sq] = calc_acc_cstrts(t,v_u,a_u,u,Amax)
+N = length(u);
+du = u(2) - u(1);
+dt = t(2) - t(1);
+kap_sq = zeros(1,N);
+for i = 1:N
     kap_sq(i) = norm(v_u(:,i))^2;
 end
 
-vec_m = zeros(1,N);
-vec_u = zeros(1,N-1);
-vec_l = zeros(1,N-1);
+tmp4j = zeros(2*N+2,N-2,3);
 for j = 1:3
-    for i = 1:N
-        vec_m(i) = a_u(j,i+1)/kap_sq(i+1);
-    end
+%     tmp4pos = zeros(N-2,N);
+%     for i = 2:N-1
+%         tmp4pos(i-1,i-1:i+1) = [-v_u(j,i)/kap_sq(i-1)/4/du,a_u(j,i)/kap_sq(i),v_u(j,i)/kap_sq(i+1)/4/du];
+%     end
+%     tmp4neg = zeros(N-2,N);
+%     for i = 2:N-1
+%         tmp4neg(i-1,i-1:i+1) = -[-v_u(j,i)/kap_sq(i-1)/4/du,a_u(j,i)/kap_sq(i),v_u(j,i)/kap_sq(i+1)/4/du];
+%     end
+    tmp4pos = zeros(N-1,N);
     for i = 1:N-1
-        vec_u(i) = v_u(j,i+1)/kap_sq(i+2)/4/den;
-        vec_l(i) = -v_u(j,i+2)/kap_sq(i+1)/4/den;
+        tmp4pos(i,i:i+1) = [a_u(j,i)/kap_sq(i)-v_u(j,i)/4/kap_sq(i)/du,v_u(j,i)/kap_sq(i+1)/4/du];
     end
-    tmp(2:end-1,:,j) = diag(vec_m)+diag(vec_u,1)+diag(vec_l,-1);
-    first = zeros(1,N);
-    first(1) = max(v_u(j,2)^2/kap_sq(2)/abs(p_u(j,2))/2,1);
-    last = zeros(1,N);
-    last(end) = max(v_u(j,end-1)^2/kap_sq(end-1)/abs(p_u(j,end-1))/2*140,1);
-    tmp(1,:,j) = first;
-    tmp(end,:,j) = last;
+    tmp4neg = zeros(N-1,N);
+    for i = 1:N-1
+        tmp4neg(i,i:i+1) = -[a_u(j,i)/kap_sq(i)-v_u(j,i)/4/kap_sq(i)/du,v_u(j,i)/kap_sq(i+1)/4/du];
+    end
+    tmp4bnd = zeros(4,N-2);
+    tmp4bnd(1,1) = 2*du/dt/dt;
+    tmp4bnd(2,1) = -2*du/dt/dt;
+    tmp4bnd(3,end) = 2*du/dt/dt;
+    tmp4bnd(4,end) = -2*du/dt/dt;
+    tmp4j(:,:,j) = [tmp4pos(:,2:end-1);tmp4neg(:,2:end-1);tmp4bnd];
 end
-A = [tmp(:,:,1);tmp(:,:,2);tmp(:,:,3)];
+A = [tmp4j(:,:,1);tmp4j(:,:,2);tmp4j(:,:,3)];
+b = zeros(6*N+6,1)+Amax;
 end
-

@@ -24,7 +24,9 @@ P = [[0;0;0],P];
 % P = waypts;
 
 % function demo
-t = linspace(0,3,1000);
+t = linspace(0,10,200);
+max = [1,2,5];
+%Vmax,Amax,Jmax
 isOnPts = 1;
 isGraph = 1;
-[p_u,v_u,a_u,j_u] = BSplineC(P,k,t,isOnPts,isGraph);
+[p_u,v_u,a_u,j_u] = BSplineC(P,k,t,max,isOnPts,isGraph);
