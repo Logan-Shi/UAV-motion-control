@@ -164,3 +164,4 @@ algo.set('MAX_NUM_ITERATIONS',40);
 END_ACADO; % End with "END ACADO" to compile.
 
 out = quadcopter_RUN(); % Run the test.
+draw_output()

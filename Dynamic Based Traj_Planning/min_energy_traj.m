@@ -75,12 +75,29 @@ omega_h = 912.109; %rad/s
 f = acado.DifferentialEquation(); % Set the differential equation object
 % f.linkMatlabODE('quadcopter_ode'); % Link to a Matlab ODE
 % f.add(dot(s) == v);
-    f.add(dot(x1)==x2);
-    f.add(dot(x2)==kb/m*(x7*sin(x11)+cos(x11)*x9)*(x13^2+x14^2+x15^2+x16^2));
+%     f.add(dot(x1)==x2);
+%     f.add(dot(x2)==kb/m*(x7*sin(x11)+cos(x11)*x9)*(x13^2+x14^2+x15^2+x16^2));
+%     f.add(dot(x3)==x4);
+%     f.add(dot(x4)==kb/m*(x9*sin(x11)-cos(x11)*x7)*(x13^2+x14^2+x15^2+x16^2));
+%     f.add(dot(x5)==x6);
+%     f.add(dot(x6)==kb/m*(x13^2+x14^2+x15^2+x16^2)-g);
+%     f.add(dot(x7)==x8);
+%     f.add(dot(x8)==(Iy-Iz)/Ix*x10*x12+l*kb/Ix*(x14^2-x16^2)-J/Ix*x10*(x13-x14+x15-x16));
+%     f.add(dot(x9)==x10);
+%     f.add(dot(x10)==(Iz-Ix)/Iy*x8*x12+l*kb/Iy*(x15^2-x13^2)+J/Iy*x8*(x13-x14+x15-x16));
+%     f.add(dot(x11)==x12);
+%     f.add(dot(x12)==(Ix-Iy)/Iz*x8*x10+kt/Iz*(x13^2-x14^2+x15^2-x16^2));
+%     f.add(dot(x13)==u1);
+%     f.add(dot(x14)==u2);
+%     f.add(dot(x15)==u3);
+%     f.add(dot(x16)==u4);
+
+f.add(dot(x1)==x2);
+    f.add(dot(x2)==kb/m*(sin(x7)*sin(x11)+cos(x7)*cos(x11)*sin(x9))*(x13^2+x14^2+x15^2+x16^2));
     f.add(dot(x3)==x4);
-    f.add(dot(x4)==kb/m*(x9*sin(x11)-cos(x11)*x7)*(x13^2+x14^2+x15^2+x16^2));
+    f.add(dot(x4)==kb/m*(cos(x7)*sin(x9)*sin(x11)-cos(x11)*sin(x7))*(x13^2+x14^2+x15^2+x16^2));
     f.add(dot(x5)==x6);
-    f.add(dot(x6)==kb/m*(x13^2+x14^2+x15^2+x16^2)-g);
+    f.add(dot(x6)==kb/m*(cos(x9)*cos(x7))*(x13^2+x14^2+x15^2+x16^2)-g);
     f.add(dot(x7)==x8);
     f.add(dot(x8)==(Iy-Iz)/Ix*x10*x12+l*kb/Ix*(x14^2-x16^2)-J/Ix*x10*(x13-x14+x15-x16));
     f.add(dot(x9)==x10);
@@ -94,7 +111,7 @@ f = acado.DifferentialEquation(); % Set the differential equation object
 
 
 %%%% HERE COMES THE OPTIMIZATION PROBLEM %%%%
-ocp = acado.OCP(ts,te,101);
+ocp = acado.OCP(ts,te,100);
 
 % Energy=c1+c2*x13+c3*x13^2+c4*x13^3+c5*x13^4 ...
 %       +c1+c2*x14+c3*x14^2+c4*x14^3+c5*x14^4 ...
@@ -110,9 +127,9 @@ ocp.minimizeLagrangeTerm(c1+c2*x13+c3*x13^2+c4*x13^3+c5*x13^4 ...
 
 ocp.subjectTo(f);
 ocp.subjectTo('AT_START', x1 == rs(1));
-ocp.subjectTo('AT_START', x2 == 0.0);
+ocp.subjectTo('AT_START', x2 == 0);
 ocp.subjectTo('AT_START', x3 == rs(2));
-ocp.subjectTo('AT_START', x4 == 0.0);
+ocp.subjectTo('AT_START', x4 == 0);
 ocp.subjectTo('AT_START', x5 == rs(3));
 ocp.subjectTo('AT_START', x6 == 0.0);
 ocp.subjectTo('AT_START', x7 == 0.0);
@@ -148,14 +165,18 @@ ocp.subjectTo( 0.01 <= x14 <= omega_max );
 ocp.subjectTo( 0.01 <= x15 <= omega_max );
 ocp.subjectTo( 0.01 <= x16 <= omega_max );
 
+ocp.subjectTo( 0 <= x1);
+ocp.subjectTo( 0 <= x3);
+ocp.subjectTo( 0 <= x5);
+
 % ocp.subjectTo( 0.01 <= x13 & x13 <= omega_max);
 % ocp.subjectTo( 0.01 <= x14 & x14 <= omega_max);
 % ocp.subjectTo( 0.01 <= x15 & x15 <= omega_max);
 % ocp.subjectTo( 0.01 <= x16 & x16 <= omega_max);
 
 algo =acado.OptimizationAlgorithm(ocp);
-algo.set( 'KKT_TOLERANCE',1e-5);
-algo.set('MAX_NUM_ITERATIONS',40);
+algo.set( 'KKT_TOLERANCE',1e-3);
+algo.set('MAX_NUM_ITERATIONS',60);
 END_ACADO; % End with "END ACADO" to compile.
 
 out = quadcopter_RUN(); % Run the test.
