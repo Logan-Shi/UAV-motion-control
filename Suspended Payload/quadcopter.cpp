@@ -77,11 +77,11 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] )
     Control u4;
     DifferentialEquation acadodata_f1;
     acadodata_f1 << dot(x1) == x2;
-    acadodata_f1 << dot(x2) == (cos(x11)*x9+sin(x11)*x7)*(pow(x13,2.00000000000000000000e+00)+pow(x14,2.00000000000000000000e+00)+pow(x15,2.00000000000000000000e+00)+pow(x16,2.00000000000000000000e+00))*2.94651618274805472935e-06;
+    acadodata_f1 << dot(x2) == (cos(x11)*cos(x7)*sin(x9)+sin(x11)*sin(x7))*(pow(x13,2.00000000000000000000e+00)+pow(x14,2.00000000000000000000e+00)+pow(x15,2.00000000000000000000e+00)+pow(x16,2.00000000000000000000e+00))*2.94651618274805472935e-06;
     acadodata_f1 << dot(x3) == x4;
-    acadodata_f1 << dot(x4) == (-cos(x11)*x7+sin(x11)*x9)*(pow(x13,2.00000000000000000000e+00)+pow(x14,2.00000000000000000000e+00)+pow(x15,2.00000000000000000000e+00)+pow(x16,2.00000000000000000000e+00))*2.94651618274805472935e-06;
+    acadodata_f1 << dot(x4) == (-cos(x11)*sin(x7)+cos(x7)*sin(x11)*sin(x9))*(pow(x13,2.00000000000000000000e+00)+pow(x14,2.00000000000000000000e+00)+pow(x15,2.00000000000000000000e+00)+pow(x16,2.00000000000000000000e+00))*2.94651618274805472935e-06;
     acadodata_f1 << dot(x5) == x6;
-    acadodata_f1 << dot(x6) == ((pow(x13,2.00000000000000000000e+00)+pow(x14,2.00000000000000000000e+00)+pow(x15,2.00000000000000000000e+00)+pow(x16,2.00000000000000000000e+00))*2.94651618274805472935e-06-9.80659999999999953957e+00);
+    acadodata_f1 << dot(x6) == ((pow(x13,2.00000000000000000000e+00)+pow(x14,2.00000000000000000000e+00)+pow(x15,2.00000000000000000000e+00)+pow(x16,2.00000000000000000000e+00))*2.94651618274805472935e-06*cos(x7)*cos(x9)-9.80659999999999953957e+00);
     acadodata_f1 << dot(x7) == x8;
     acadodata_f1 << dot(x8) == ((-7.53086419753086211415e-01)*x10*x12+(pow(x14,2.00000000000000000000e+00)-pow(x16,2.00000000000000000000e+00))*8.27570903179237609424e-06-(x13-x14+x15-x16)*5.17333333333333186821e-04*x10);
     acadodata_f1 << dot(x9) == x10;
@@ -96,13 +96,13 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] )
     acadodata_f1 << dot(x16) == u4;
 
     OCP ocp1(0, 20, 100);
-    ocp1.minimizeLagrangeTerm(pow(theta,2.00000000000000000000e+00));
+    ocp1.minimizeLagrangeTerm(pow(thetadot,2.00000000000000000000e+00));
     ocp1.subjectTo(acadodata_f1);
     ocp1.subjectTo(AT_START, x1 == 0.00000000000000000000e+00);
     ocp1.subjectTo(AT_START, x2 == 0.00000000000000000000e+00);
     ocp1.subjectTo(AT_START, x3 == 0.00000000000000000000e+00);
     ocp1.subjectTo(AT_START, x4 == 0.00000000000000000000e+00);
-    ocp1.subjectTo(AT_START, x5 == 6.00000000000000000000e+00);
+    ocp1.subjectTo(AT_START, x5 == 0.00000000000000000000e+00);
     ocp1.subjectTo(AT_START, x6 == 0.00000000000000000000e+00);
     ocp1.subjectTo(AT_START, x7 == 0.00000000000000000000e+00);
     ocp1.subjectTo(AT_START, x8 == 0.00000000000000000000e+00);
@@ -120,7 +120,7 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] )
     ocp1.subjectTo(AT_END, x2 == 0.00000000000000000000e+00);
     ocp1.subjectTo(AT_END, x3 == 5.00000000000000000000e+00);
     ocp1.subjectTo(AT_END, x4 == 0.00000000000000000000e+00);
-    ocp1.subjectTo(AT_END, x5 == 1.20000000000000000000e+01);
+    ocp1.subjectTo(AT_END, x5 == 6.00000000000000000000e+00);
     ocp1.subjectTo(AT_END, x6 == 0.00000000000000000000e+00);
     ocp1.subjectTo(AT_END, x7 == 0.00000000000000000000e+00);
     ocp1.subjectTo(AT_END, x8 == 0.00000000000000000000e+00);
@@ -139,7 +139,7 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] )
 
 
     OptimizationAlgorithm algo1(ocp1);
-    algo1.set( KKT_TOLERANCE, 1.000000E-02 );
+    algo1.set( KKT_TOLERANCE, 1.000000E-03 );
     algo1.set( MAX_NUM_ITERATIONS, 60 );
     returnValue returnvalue = algo1.solve();
 

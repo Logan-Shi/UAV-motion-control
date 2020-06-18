@@ -23,5 +23,5 @@ psi_dot2_0 = 0;
 psi_dot_1 = 0;
 psi_dot2_1 = 0;
 min_psi_dot2(psi_pts,psi_dot_0,psi_dot2_0,psi_dot_1,psi_dot2_1,T,h)
-title('psi')
+title('min psi-dot2')
 legend('keyframes','psi')

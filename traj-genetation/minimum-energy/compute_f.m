@@ -3,5 +3,5 @@ function f=compute_f(n,t1,t2)
     for i=3:length(f)
         f(i)=(t2^(i-2)-t1^(i-2))*(i+1);
     end
-    f=0.02*f;
+    f=0.0*f;
 end

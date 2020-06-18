@@ -23,8 +23,9 @@ function min_energy_simple(waypts,v0,a0,v1,a1,T,h)
     jzz = polys_vals(polys_z,ts,tt,3);
     
 %     figure
-    plot3(xx,yy,zz)
-    hold on
+hold on
+    plot3(xx,yy,zz,'g')
+    
 %     plot3(waypts(1,:),waypts(2,:),waypts(3,:),'*')
 end
 

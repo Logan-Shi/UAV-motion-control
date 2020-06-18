@@ -1,4 +1,4 @@
-function min_snap_simple(waypts,v0,a0,v1,a1,T,h)
+function [p,v,a,J]=min_snap_simple(waypts,v0,a0,v1,a1,T,h)
 
     n_order = 5;
     
@@ -21,6 +21,11 @@ function min_snap_simple(waypts,v0,a0,v1,a1,T,h)
     vzz = polys_vals(polys_z,ts,tt,1);
     azz = polys_vals(polys_z,ts,tt,2);
     jzz = polys_vals(polys_z,ts,tt,3);
+    
+    p = [xx;yy;zz];
+    v = [vxx;vyy;vzz];
+    a = [axx;ayy;azz];
+    J = [jxx;jyy;jzz];
     
     figure
     plot3(waypts(1,:),waypts(2,:),waypts(3,:),'*')

@@ -74,28 +74,28 @@ c7 = R*J^2/K_T^2;
 
 omega_h = 912.109; %rad/s
 
-
+rs=[0;0;0];
 xs=0;
 ys=0;
-zs=6;
+zs=0;
 
+re1=[4;5;6];
 xf=4;
 yf=5;
-zf=12;
+zf=6;
 
 tf=20;
-
 
 % Differential Equation
 f = acado.DifferentialEquation(); % Set the differential equation object
 % f.linkMatlabODE('quadcopter_ode'); % Link to a Matlab ODE
 % f.add(dot(s) == v);
     f.add(dot(x1)==x2);
-    f.add(dot(x2)==kb/m*(x7*sin(x11)+cos(x11)*x9)*(x13^2+x14^2+x15^2+x16^2));
+    f.add(dot(x2)==kb/m*(sin(x7)*sin(x11)+cos(x7)*cos(x11)*sin(x9))*(x13^2+x14^2+x15^2+x16^2));
     f.add(dot(x3)==x4);
-    f.add(dot(x4)==kb/m*(x9*sin(x11)-cos(x11)*x7)*(x13^2+x14^2+x15^2+x16^2));
+    f.add(dot(x4)==kb/m*(cos(x7)*sin(x9)*sin(x11)-cos(x11)*sin(x7))*(x13^2+x14^2+x15^2+x16^2));
     f.add(dot(x5)==x6);
-    f.add(dot(x6)==kb/m*(x13^2+x14^2+x15^2+x16^2)-g);
+    f.add(dot(x6)==kb/m*(cos(x9)*cos(x7))*(x13^2+x14^2+x15^2+x16^2)-g);
     f.add(dot(x7)==x8);
     f.add(dot(x8)==(Iy-Iz)/Ix*x10*x12+l*kb/Ix*(x14^2-x16^2)-J/Ix*x10*(x13-x14+x15-x16));
     f.add(dot(x9)==x10);
@@ -122,7 +122,7 @@ ocp = acado.OCP(0, tf,100);
 %       +c7*(u1^2+u2^2+u3^2+u4^2);
 
 % ocp.minimizeLagrangeTerm((kb/m*(x7*sin(x11)+cos(x11)*x9)*(x13^2+x14^2+x15^2+x16^2))^2+(kb/m*(x9*sin(x11)-cos(x11)*x7)*(x13^2+x14^2+x15^2+x16^2))^2+(kb/m*(x13^2+x14^2+x15^2+x16^2)-g)^2);
-ocp.minimizeLagrangeTerm(theta^2);
+ocp.minimizeLagrangeTerm(thetadot^2);
 ocp.subjectTo(f);
 ocp.subjectTo('AT_START', x1 == xs);
 ocp.subjectTo('AT_START', x2 == 0.0);
@@ -172,9 +172,84 @@ ocp.subjectTo( 0.01 <= x16 <= omega_max );
 % ocp.subjectTo( 0.01 <= x16 & x16 <= omega_max);
 
 algo =acado.OptimizationAlgorithm(ocp);
-algo.set( 'KKT_TOLERANCE',1e-2);
+algo.set( 'KKT_TOLERANCE',1e-3);
 algo.set('MAX_NUM_ITERATIONS',60);
 END_ACADO; % End with "END ACADO" to compile.
 
-out = quadcopter_RUN(); % Run the test.
-draw_output()
+out1 = quadcopter_RUN(); % Run the test.
+% 
+plot3(rs(1),rs(2),rs(3),'*')
+hold on
+plot3(re1(1),re1(2),re1(3),'*')
+plot3(out1.STATES(:,2),out1.STATES(:,4),out1.STATES(:,6))
+legend('start point','end point')
+title('trajectory')
+xlabel('x')
+ylabel('y')
+zlabel('z')
+
+
+% subplot(2,3,1)
+% plot(out1.STATES(:,1),out1.STATES(:,2))
+% hold on
+% plot(out1.STATES(:,1),out1.STATES(:,4))
+% plot(out1.STATES(:,1),out1.STATES(:,6))
+% legend('x','y','z')
+% xlabel('t / s')
+% ylabel('traj / m')
+% title('trajectory')
+% 
+% 
+% 
+% subplot(2,3,3)
+% plot(out1.STATES(:,1),out1.STATES(:,3))
+% hold on
+% plot(out1.STATES(:,1),out1.STATES(:,5))
+% plot(out1.STATES(:,1),out1.STATES(:,7))
+% legend('xdot','ydot','zdot')
+% xlabel('t / s')
+% ylabel('vel / m/s')
+% title('velocity')
+% 
+% subplot(2,3,2)
+% plot(out1.STATES(:,1),out1.STATES(:,8))
+% hold on
+% plot(out1.STATES(:,1),out1.STATES(:,10))
+% plot(out1.STATES(:,1),out1.STATES(:,12))
+% legend('phi','theta','psi')
+% xlabel('t / s')
+% ylabel('euler / rad')
+% title('attitude')
+% 
+% subplot(2,3,4)
+% plot(out1.STATES(:,1),out1.STATES(:,9))
+% hold on
+% plot(out1.STATES(:,1),out1.STATES(:,11))
+% plot(out1.STATES(:,1),out1.STATES(:,13))
+% legend('phi dot','theta dot','psi dot')
+% xlabel('t / s')
+% ylabel('eulerdot / rad/s')
+% title('euler dot')
+% 
+% subplot(2,3,5)
+% plot(out1.STATES(:,1),out1.STATES(:,14))
+% hold on
+% plot(out1.STATES(:,1),out1.STATES(:,15))
+% plot(out1.STATES(:,1),out1.STATES(:,16))
+% plot(out1.STATES(:,1),out1.STATES(:,17))
+% legend('omega1','omega2','omega3','omega4')
+% xlabel('t / s')
+% ylabel('omega / rad/s')
+% title('rotor speed')
+% axis([0 20 800 1000])
+% 
+% subplot(2,3,6)
+% plot(out1.CONTROLS(:,1),out1.CONTROLS(:,2))
+% hold on
+% plot(out1.CONTROLS(:,1),out1.CONTROLS(:,3))
+% plot(out1.CONTROLS(:,1),out1.CONTROLS(:,4))
+% plot(out1.CONTROLS(:,1),out1.CONTROLS(:,5))
+% legend('alpha1','alpha2','alpha3','alpha4')
+% xlabel('t / s')
+% ylabel('alpha / rad/s^2')
+% title('control')

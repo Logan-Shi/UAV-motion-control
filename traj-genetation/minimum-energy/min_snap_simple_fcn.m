@@ -21,9 +21,9 @@ function [p,v,a,J]=min_snap_simple_fcn(waypts,v0,a0,v1,a1,T,tt)
     azz = polys_vals(polys_z,ts,tt,2);
     jzz = polys_vals(polys_z,ts,tt,3);
     
-    % figure
-    % plot3(xx,yy,zz)
-    % hold on
+    figure
+    plot3(xx,yy,zz)
+    hold on
     % plot3(waypts(1,:),waypts(2,:),waypts(3,:),'*')
 
     p = [xx;yy;zz];

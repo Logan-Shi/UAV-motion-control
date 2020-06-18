@@ -21,16 +21,16 @@ R(:,:,2)=R2;
 R(:,:,3)=R3;
 R(:,:,4)=R4;
 
-T=[0;1;2;3];
+T=[0;5;10;15];
 omega0=[0.6,0.1,-0.3];
 
-ti=linspace(0,2.3,10001);
+ti=0:0.01:15;
 % c1s = spline(T,expCs(1,:),ti);
 % c2s = spline(T,expCs(2,:),ti);
 % c3s = spline(T,expCs(3,:),ti);
 % 计算指数坐标r 3*1向量
 % ri = spline(T,expCs,ti);
-ri = CubicExpInterp(T,R,ti,omega0);
+ri = CubicExpInterp(T,R,ti);
 
 % 三点中心差分计算r的导数
 ri_dot=zeros(3,length(ti));

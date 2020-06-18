@@ -92,7 +92,7 @@ f = acado.DifferentialEquation(); % Set the differential equation object
 %     f.add(dot(x15)==u3);
 %     f.add(dot(x16)==u4);
 
-f.add(dot(x1)==x2);
+    f.add(dot(x1)==x2);
     f.add(dot(x2)==kb/m*(sin(x7)*sin(x11)+cos(x7)*cos(x11)*sin(x9))*(x13^2+x14^2+x15^2+x16^2));
     f.add(dot(x3)==x4);
     f.add(dot(x4)==kb/m*(cos(x7)*sin(x9)*sin(x11)-cos(x11)*sin(x7))*(x13^2+x14^2+x15^2+x16^2));
