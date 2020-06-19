@@ -75,11 +75,11 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] )
     Control u4;
     DifferentialEquation acadodata_f1;
     acadodata_f1 << dot(x1) == x2;
-    acadodata_f1 << dot(x2) == (cos(x11)*cos(x7)*sin(x9)+sin(x11)*sin(x7))*(pow(x13,2.00000000000000000000e+00)+pow(x14,2.00000000000000000000e+00)+pow(x15,2.00000000000000000000e+00)+pow(x16,2.00000000000000000000e+00))*2.94651618274805472935e-06;
+    acadodata_f1 << dot(x2) == (cos(x11)*x9+sin(x11)*x7)*(pow(x13,2.00000000000000000000e+00)+pow(x14,2.00000000000000000000e+00)+pow(x15,2.00000000000000000000e+00)+pow(x16,2.00000000000000000000e+00))*2.94651618274805472935e-06;
     acadodata_f1 << dot(x3) == x4;
-    acadodata_f1 << dot(x4) == (-cos(x11)*sin(x7)+cos(x7)*sin(x11)*sin(x9))*(pow(x13,2.00000000000000000000e+00)+pow(x14,2.00000000000000000000e+00)+pow(x15,2.00000000000000000000e+00)+pow(x16,2.00000000000000000000e+00))*2.94651618274805472935e-06;
+    acadodata_f1 << dot(x4) == (-cos(x11)*x7+sin(x11)*x9)*(pow(x13,2.00000000000000000000e+00)+pow(x14,2.00000000000000000000e+00)+pow(x15,2.00000000000000000000e+00)+pow(x16,2.00000000000000000000e+00))*2.94651618274805472935e-06;
     acadodata_f1 << dot(x5) == x6;
-    acadodata_f1 << dot(x6) == ((pow(x13,2.00000000000000000000e+00)+pow(x14,2.00000000000000000000e+00)+pow(x15,2.00000000000000000000e+00)+pow(x16,2.00000000000000000000e+00))*2.94651618274805472935e-06*cos(x7)*cos(x9)-9.80659999999999953957e+00);
+    acadodata_f1 << dot(x6) == ((pow(x13,2.00000000000000000000e+00)+pow(x14,2.00000000000000000000e+00)+pow(x15,2.00000000000000000000e+00)+pow(x16,2.00000000000000000000e+00))*2.94651618274805472935e-06-9.80659999999999953957e+00);
     acadodata_f1 << dot(x7) == x8;
     acadodata_f1 << dot(x8) == ((-7.53086419753086211415e-01)*x10*x12+(pow(x14,2.00000000000000000000e+00)-pow(x16,2.00000000000000000000e+00))*8.27570903179237609424e-06-(x13-x14+x15-x16)*5.17333333333333186821e-04*x10);
     acadodata_f1 << dot(x9) == x10;
@@ -114,7 +114,7 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] )
     ocp1.subjectTo(AT_END, x2 == 0.00000000000000000000e+00);
     ocp1.subjectTo(AT_END, x3 == 5.00000000000000000000e+00);
     ocp1.subjectTo(AT_END, x4 == 0.00000000000000000000e+00);
-    ocp1.subjectTo(AT_END, x5 == 6.00000000000000000000e+00);
+    ocp1.subjectTo(AT_END, x5 == 1.20000000000000000000e+01);
     ocp1.subjectTo(AT_END, x6 == 0.00000000000000000000e+00);
     ocp1.subjectTo(AT_END, x7 == 0.00000000000000000000e+00);
     ocp1.subjectTo(AT_END, x8 == 0.00000000000000000000e+00);
@@ -130,14 +130,11 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] )
     ocp1.subjectTo(1.00000000000000002082e-02 <= x14 <= 1.04719699999999988904e+03);
     ocp1.subjectTo(1.00000000000000002082e-02 <= x15 <= 1.04719699999999988904e+03);
     ocp1.subjectTo(1.00000000000000002082e-02 <= x16 <= 1.04719699999999988904e+03);
-    ocp1.subjectTo(0.00000000000000000000e+00 <= x1);
-    ocp1.subjectTo(0.00000000000000000000e+00 <= x3);
-    ocp1.subjectTo(0.00000000000000000000e+00 <= x5);
 
 
     OptimizationAlgorithm algo1(ocp1);
-    algo1.set( KKT_TOLERANCE, 1.000000E-03 );
-    algo1.set( MAX_NUM_ITERATIONS, 60 );
+    algo1.set( KKT_TOLERANCE, 1.000000E-05 );
+    algo1.set( MAX_NUM_ITERATIONS, 40 );
     returnValue returnvalue = algo1.solve();
 
     VariablesGrid out_states; 
