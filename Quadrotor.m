@@ -31,6 +31,7 @@ classdef Quadrotor < handle
         % history of the quadrotor
         position_H; velocity_H; acceleration_H;
         attitude_H; Omega_H; Omega_dot_H; euler_H;
+        rotorspeeds;
 
         % simulation interval
         dt = 0.0005;
@@ -83,7 +84,7 @@ classdef Quadrotor < handle
             Quad.attitude_H(:,:,Quad.current_step) = Quad.attitude;
             Quad.Omega_H(:,Quad.current_step) = Quad.Omega;
             Quad.euler_H(:,Quad.current_step) = Quad.euler;
-            
+            Quad.rotorspeeds(:,Quad.current_step) = rotorSpeeds;
         end
 
         function params=getQuadParams(Quad)

@@ -25,10 +25,20 @@ for j = 1:3
         tmp4neg(i-1,i-1:i+1) = -sqrt(qstar(i))*[alpha(i),beta(i),gama(i)]+[0,Jmax/2/qstar(i),0];
     end
     tmp4bnd = zeros(4,N-2);
-    tmp4bnd(1:2,1:2) = [Jmax/2/qstar(2),N^2*(v_u(j,3))^2*sqrt(qstar(2))/8/v_u(j,2);
-                        Jmax/2/qstar(2),-N^2*(v_u(j,3))^2*sqrt(qstar(2))/8/v_u(j,2)];
-    tmp4bnd(3:4,end-1:end) = [Jmax/2/qstar(N-1),N^2*(v_u(j,N-2))^2*sqrt(qstar(N-1))/8/v_u(j,N-1);
-                              Jmax/2/qstar(N-1),-N^2*(v_u(j,N-2))^2*sqrt(qstar(N-1))/8/v_u(j,N-1)];
+    if v_u(j,2) == 0
+        den = 1;
+    else
+        den = v_u(j,2);
+    end
+    tmp4bnd(1:2,1:2) = [Jmax/2/qstar(2),N^2*(v_u(j,3))^2*sqrt(qstar(2))/8/den;
+                        Jmax/2/qstar(2),-N^2*(v_u(j,3))^2*sqrt(qstar(2))/8/den];
+    if v_u(j,N-1) == 0
+        den2 = 1;
+    else
+        den2 = v_u(j,2);
+    end
+    tmp4bnd(3:4,end-1:end) = [Jmax/2/qstar(N-1),N^2*(v_u(j,N-2))^2*sqrt(qstar(N-1))/8/den2;
+                              Jmax/2/qstar(N-1),-N^2*(v_u(j,N-2))^2*sqrt(qstar(N-1))/8/den2];
     tmp4j(:,:,j) = [tmp4pos(:,2:end-1);tmp4neg(:,2:end-1);tmp4bnd];
 end
 A = [tmp4j(:,:,1);tmp4j(:,:,2);tmp4j(:,:,3)];

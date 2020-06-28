@@ -6,28 +6,26 @@ quad_a = Quadrotor(params);
 dt = 0.01;
 quad_a.dt = dt;
 
-duration = 10;
+duration = 12;
 tspan = 0:dt:duration;
 
 %input
 k = 4;
-n = 6;
-P(:,1) = zeros(3,1);
-for i = 1:n
-    P(1,i) = cos((i-1)/n*2*pi)-1;
-    P(2,i) = sin((i-1)/n*2*pi);
-    P(3,i) = 1;
-end
-P = [[0;0;0],P];
-load waypts;
-P = waypts;
-pointNum = size(P,2);
-angle = (0:pointNum-1)*pi/pointNum;
-R = zeros(3,3,pointNum);
-for i=1:pointNum
-    R(:,:,i) = rotZ(angle(i)/4)*rotY(0)*rotX(0);
-end
-[pt,vt,at,Jt] = BSplineC(P,k,tspan,[3,4,3],1,1);
+% n = 6;
+% P(:,1) = zeros(3,1);
+% for i = 1:n
+%     P(1,i) = cos((i-1)/n*2*pi)-1;
+%     P(2,i) = sin((i-1)/n*2*pi);
+%     P(3,i) = 1;
+% end
+% load waypts;
+% P = waypts;
+% P(3,:) = P(3,:)+1;
+% P = [[0;0;0],P];
+load scan.mat;
+P = P(:,1:15);
+
+[pt,vt,at,Jt] = BSplineC(P,k,tspan,[3,4,3],0,1);
 
 %%
 for k = 1:length(tspan)
@@ -39,7 +37,7 @@ for k = 1:length(tspan)
     v_c = quad_a.velocity + randn(1)*noise;
     omg_c = quad_a.Omega + randn(1)*noise;
 
-    [u1,u2] = controller(p,v,a,J,yaw,yd,p_c, v_c, quad_a.attitude, omg_c, quad_a.m, quad_a.g,6,2,diag([1.2,1.5,1.2]),diag([0.1,0.1,1.2]));
+    [u1,u2] = controller(p,v,a,J,yaw,yd,p_c, v_c, quad_a.attitude, omg_c, quad_a.m, quad_a.g,1.5,0.8,diag([1,1,1.2]),diag([0.1,0.1,1.2]));
     
     spd = get_rotorspeed(u1,u2,quad_a.k,quad_a.L,quad_a.b);
     

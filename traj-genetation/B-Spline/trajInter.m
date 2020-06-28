@@ -4,7 +4,7 @@ V = zeros(1,N);
 u = linspace(0,1,N);
 Ts = t(2)-t(1);
 ut = zeros(1,N);
-ut(1) = u(2)-u(1);
+ut(1) = (u(2)-u(1))/10;
 for i = 1:N-1
     V(i+1) = BSpline(sqrt(Vsq_u)',2,ut(i));
     [~,v_u,a_u,~] = BSplineDrv(P,n,k,ut(i));
@@ -19,4 +19,5 @@ plot(t,ut)
 title('u(t)')
 xlabel('time,s')
 ylabel('param u')
+grid on
 end

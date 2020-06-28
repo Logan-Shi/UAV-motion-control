@@ -6,6 +6,8 @@ if OnPts
     [P,P2] = on_way_pts(P,k,NodeVector);
     p_tmp = BSpline(P,k,linspace(0,1,n+1));
     disp(['off way points by: ' num2str(norm(p_tmp-P2))]);
+else
+    P2 = P;
 end
 
 % µº ∏º∆À„
@@ -26,8 +28,16 @@ p_sample = BSpline(P,k,ut(end));
 v_t = zeros(3,length(t));
 a_t = zeros(3,length(t));
 j_t = zeros(3,length(t));
+path = 0;
 for i = 1:length(t)
     v_t(:,i) = v_u(:,i)*Vt(i)/norm(v_u(:,i));
+    path = path + Vt(i)*(t(2)-t(1));
+end
+disp(['total length ' num2str(path)])
+if (ut(end)==1)
+    disp(['total time ' num2str(min(t(ut==ut(end))))])
+else
+    disp('cannot finish path under given constraint')
 end
 for i = 1:length(t)
     a_t(:,i) = a_u(:,i)*(Vt(i)/norm(v_u(:,i)))^2-v_u(:,i)*Vt(i)^2*dot(v_u(:,i),a_u(:,i))/norm(v_u(:,i))^4;
@@ -59,7 +69,7 @@ if Graph
         'MarkerSize',8);
     plot3(p_t(1,:), p_t(2,:), p_t(3,:), 'Marker','.','LineStyle','-', 'Color',[.3 .6 .9]);
     quiver3(p_t(1,:), p_t(2,:), p_t(3,:),v_t(1,:), v_t(2,:), v_t(3,:), 3)
-    quiver3(p_t(1,:), p_t(2,:), p_t(3,:),a_u(1,:), a_t(2,:), a_t(3,:), 3)
+    quiver3(p_t(1,:), p_t(2,:), p_t(3,:),a_t(1,:), a_t(2,:), a_t(3,:), 3)
     grid on;axis equal
     legend('control point','end point','p','v','a')
     title('B-Spline Demo')
@@ -75,6 +85,7 @@ if Graph
     legend('x','y','z')
     xlabel('time,s');ylabel('m');
     title('x y z position')
+    grid on
     
     subplot(3,1,2)
     plot(t,v_t(1,:))
@@ -84,6 +95,7 @@ if Graph
     legend('xdot','ydot','zdot')
     xlabel('time,s');ylabel('m/s');
     title('x y z velocity')
+    grid on
     
     subplot(3,1,3)
     plot(t,a_t(1,:))
@@ -93,6 +105,7 @@ if Graph
     legend('xddot','yddot','zddot')
     xlabel('time,s');ylabel('m/s^2');
     title('x y z accelaration')
+    grid on
     
     figure()
     plot(t,j_t(1,:))
@@ -102,5 +115,6 @@ if Graph
     legend('xdddot','ydddot','zdddot')
     xlabel('time,s');ylabel('m/s^3');
     title('x y z jerk')
+    grid on
 end
 end
