@@ -10,7 +10,9 @@ function udot = forwardScan(u,udot,v_u,a_u)
 end
 
 function [newu,exitcond] = calcNewUdot(v,a,lastudot,du)
-    [newu,~,exitcond,~] = fmincon(@(x) -x,0,[],[],[],[],0,1,@(x) constr(x,v,a,lastudot,du));
+    options = optimoptions('fmincon','Display','off');
+    [newu,~,exitcond,~] = fmincon(@(x) -x,0,[],[],[],[],0,1,@(x) constr(x,v,a,lastudot,du),options);
+%     [newu,~,exitcond,~] = ga(@(x) -x,1,[],[],[],[],0,1,@(x) constr(x,v,a,lastudot,du));
 end    
 
 function uddot = uddot(udot,last_udot,du)

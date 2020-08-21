@@ -43,7 +43,7 @@ P = [[0;0;0;0],P];
 % plot3(p_u(1,:),p_u(2,:),p_u(3,:));
 
 % function demo
-t = linspace(0,10,30);
+t = linspace(0,10,100);
 max = [3,4,3];
 %Vmax,Amax,Jmax
 isOnPts = 1;

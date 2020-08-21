@@ -16,7 +16,9 @@ end
 end
 
 function [newu,exitcond] = calcNewUdotBack(v,a,lastudot,du)
-[newu,~,exitcond,~] = fmincon(@(x) -x,0,[],[],[],[],0,1,@(x) constrBack(x,v,a,lastudot,du));
+    options = optimoptions('fmincon','Display','off');
+    [newu,~,exitcond,~] = fmincon(@(x) -x,0,[],[],[],[],0,1,@(x) constrBack(x,v,a,lastudot,du),options);
+%     [newu,~,exitcond,~] = ga(@(x) -x,1,[],[],[],[],0,1,@(x) constrBack(x,v,a,lastudot,du));
 end
 
 function uddot = uddot(udoti,udotlasti,du)
