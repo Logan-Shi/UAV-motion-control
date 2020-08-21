@@ -26,7 +26,6 @@ function min_snap_simple(waypts,v0,a0,v1,a1,T,h)
     plot3(xx,yy,zz)
     hold on
     plot3(waypts(1,:),waypts(2,:),waypts(3,:),'*')
-    title('minmum snap trajectory')
 end
 
 function polys = minimum_snap_single_axis_simple(waypts,ts,n_order,v0,a0,ve,ae)

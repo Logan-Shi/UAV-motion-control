@@ -1,4 +1,4 @@
-function [p_t,v_t,a_t,j_t] = BSplineC(P,k,t,capibility,OnPts,Graph)
+function L= BSplineC_L(P,k,t,capibility,OnPts,Graph,u,udot)
 n = size(P,2)-1;
 NodeVector = U_quasi_uniform(n,k); % 准均匀B样条的节点矢量
 % 经过way points，控制点修正
@@ -13,9 +13,8 @@ end
 % 导矢计算
 u = linspace(0,1,length(t));
 [p_u,v_u,a_u,j_u] = BSplineDrv(P,n,k,u);
-u = 0.5;
-udot = 0.5;
-[L,U] = feasibiltyCheck(u,udot,v_u,a_u,capibility)
+
+[L,U] = feasibiltyCheck(u,udot,v_u,a_u,capibility);
 p_t = 0;
 v_t = 0;
 a_t = 0;
