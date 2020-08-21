@@ -11,19 +11,19 @@ tspan = 0:dt:duration;
 
 %input
 k = 4;
-% n = 6;
-% P(:,1) = zeros(3,1);
-% for i = 1:n
-%     P(1,i) = cos((i-1)/n*2*pi)-1;
-%     P(2,i) = sin((i-1)/n*2*pi);
-%     P(3,i) = 1;
-% end
-% load waypts;
-% P = waypts;
-% P(3,:) = P(3,:)+1;
-% P = [[0;0;0],P];
-load scan.mat;
-P = P(:,1:15);
+n = 6;
+P(:,1) = zeros(3,1);
+for i = 1:n
+    P(1,i) = cos((i-1)/n*2*pi)-1;
+    P(2,i) = sin((i-1)/n*2*pi);
+    P(3,i) = 1;
+end
+load waypts;
+P = waypts;
+P(3,:) = P(3,:)+1;
+P = [[0;0;0],P];
+% load scan.mat;
+% P = P(:,1:15);
 
 [pt,vt,at,Jt] = BSplineC(P,k,tspan,[3,4,3],0,1);
 

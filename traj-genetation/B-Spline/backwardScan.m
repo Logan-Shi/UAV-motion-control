@@ -16,8 +16,8 @@ end
 end
 
 function [newu,exitcond] = calcNewUdotBack(v,a,lastudot,du)
-    options = optimoptions('fmincon','Display','off');
-    [newu,~,exitcond,~] = fmincon(@(x) -x,0,[],[],[],[],0,1,@(x) constrBack(x,v,a,lastudot,du),options);
+options = optimoptions('fmincon','Display','off');
+[newu,~,exitcond,~] = fmincon(@(x) -x,0,[],[],[],[],0,1,@(x) constrBack(x,v,a,lastudot,du),options);
 %     [newu,~,exitcond,~] = ga(@(x) -x,1,[],[],[],[],0,1,@(x) constrBack(x,v,a,lastudot,du));
 end
 
@@ -26,16 +26,15 @@ uddot = (udoti^2 - udotlasti^2)/2/du;
 end
 
 function [c,ceq] = constrBack(udot,v,a,lastudot,du)
-vmax = 3;%m/s
-amax = 4;
-c(1) = v(1)*udot - vmax;
-c(2) = a(1)*udot^2+v(1)*uddot(lastudot,udot,du)-amax;
-
-c(3) = v(2)*udot - vmax;
-c(4) = a(2)*udot^2+v(2)*uddot(lastudot,udot,du)-amax;
-
-c(5) = v(3)*udot - vmax;
-c(6) = a(3)*udot^2+v(3)*uddot(lastudot,udot,du)-amax;
+vmax = 1;%m/s
+amax = 1;
+c = zeros(1,4);
+for i = 1:3
+    c(4*(i-1)+1) = v(i)*udot - vmax;
+    c(4*(i-1)+2) = a(i)*udot^2+v(i)*uddot(udot,lastudot,du)-amax;
+    c(4*(i-1)+3) = - vmax - v(i)*udot;
+    c(4*(i-1)+4) = -amax - a(i)*udot^2+v(i)*uddot(udot,lastudot,du);
+end
 ceq = [];
 end
 

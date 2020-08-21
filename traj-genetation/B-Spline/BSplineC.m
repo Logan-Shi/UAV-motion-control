@@ -11,7 +11,7 @@ else
 end
 
 % µº ∏º∆À„
-u = linspace(0,1,length(t));
+u = linspace(0,1,30);
 udot = zeros(1,length(u));
 [p_u,v_u,a_u,j_u] = BSplineDrv(P,n,k,u);
 udot = forwardScan(u,udot,v_u,a_u);
