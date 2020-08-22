@@ -41,6 +41,13 @@ P = [[0;0;0;0],P];
 %                         'MarkerSize',6);
 % hold on
 % plot3(p_u(1,:),p_u(2,:),p_u(3,:));
+% p_sample = BSpline(P,4,0.5);
+% plot3(p_sample(1,:),p_sample(2,:),p_sample(3,:),...
+%                         'o','LineWidth',1,...
+%                         'MarkerEdgeColor','k',...
+%                         'MarkerFaceColor','r',...
+%                         'MarkerSize',6);
+
 
 % function demo
 t = linspace(0,10,300);
