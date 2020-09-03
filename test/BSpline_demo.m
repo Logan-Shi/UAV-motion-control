@@ -50,8 +50,8 @@ P = [[0;0;0;0],P];
 
 
 % function demo
-t = linspace(0,10,300);
-max = [3,5,5];
+t = linspace(0,10,100);
+max = [3,3,3];
 %Vmax,Amax,Jmax
 isOnPts = 1;
 isGraph = 1;

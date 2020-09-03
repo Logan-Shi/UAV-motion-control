@@ -11,7 +11,7 @@ else
 end
 
 % 导矢计算
-u = linspace(0,1,size(P,2)*2+2);
+u = linspace(0,1,length(t));
 udot = zeros(1,length(u));
 [p_u,v_u,a_u,j_u] = BSplineDrv(P,n,k,u);
 udot = forwardScan(u,udot,v_u,a_u,cap);
@@ -22,6 +22,7 @@ hold on
 plot(u,udot)
 legend("forward","backward")
 xlabel("u");ylabel("du/dt")
+grid on
 % 速度规划
 % [Vsq_u,kapsq] = VelPlan(t,p_u,v_u,a_u,cap(1),cap(2));
 % Vsq_jerk = JerkMaxed(Vsq_u,v_u,a_u,j_u,t,kapsq,cap(3));
