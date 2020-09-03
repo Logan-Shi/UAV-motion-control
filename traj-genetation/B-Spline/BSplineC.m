@@ -11,16 +11,17 @@ else
 end
 
 % 导矢计算
-u = linspace(0,1,30);
+u = linspace(0,1,size(P,2)*2+2);
 udot = zeros(1,length(u));
 [p_u,v_u,a_u,j_u] = BSplineDrv(P,n,k,u);
-udot = forwardScan(u,udot,v_u,a_u);
+udot = forwardScan(u,udot,v_u,a_u,cap);
 figure()
-plot(udot)
-udot = backwardScan(u,udot,v_u,a_u);
+plot(u,udot)
+udot = backwardScan(u,udot,v_u,a_u,cap);
 hold on
-plot(udot)
+plot(u,udot)
 legend("forward","backward")
+xlabel("u");ylabel("du/dt")
 % 速度规划
 % [Vsq_u,kapsq] = VelPlan(t,p_u,v_u,a_u,cap(1),cap(2));
 % Vsq_jerk = JerkMaxed(Vsq_u,v_u,a_u,j_u,t,kapsq,cap(3));
@@ -59,8 +60,8 @@ for i = 1:length(t)
 end
 j_t = FDMinter3(t,a_t);
 disp(['total length ' num2str(path)])
-if (ut(end)==1)
-    disp(['total time ' num2str(min(t(ut==ut(end))))])
+if (ut(end)>1-1e-5)
+    disp(['total time ' num2str(min(t(ut>1-1e-5)))])
 else
     disp('cannot finish path under given constraint')
 end

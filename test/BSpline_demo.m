@@ -51,7 +51,7 @@ P = [[0;0;0;0],P];
 
 % function demo
 t = linspace(0,10,300);
-max = [3,4,3];
+max = [3,5,5];
 %Vmax,Amax,Jmax
 isOnPts = 1;
 isGraph = 1;

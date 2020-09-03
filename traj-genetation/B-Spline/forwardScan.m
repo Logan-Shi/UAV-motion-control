@@ -1,35 +1,45 @@
-function udot = forwardScan(u,udot,v_u,a_u)
+function udot = forwardScan(u,udot,v_u,a_u,cap)
 for i = 2:length(u)
-    [newudot,exitcond] = calcNewUdot(v_u(:,i),a_u(:,i),udot(i-1),u(2)-u(1));
+    [newudot,exitcond] = calcNewUdot(v_u(:,i),a_u(:,i),udot(i-1),u(2)-u(1),cap);
     if exitcond<=0
-        [newudot,newlastudot] = BisectionMethod(@(lastudot) calcNewUdot(v_u(:,i),a_u(:,i),lastudot,u(2)-u(1)),0,1,1e-3);
+        [newudot,newlastudot] = BisectionMethod(@(lastudot) calcNewUdot(v_u(:,i),a_u(:,i),lastudot,u(2)-u(1),cap),0,1,1e-3);
         udot(i-1) = newlastudot;
     end
     udot(i) = newudot;
 end
 end
 
-function [newu,exitcond] = calcNewUdot(v,a,lastudot,du)
-options = optimoptions('fmincon','Display','off');
-[newu,~,exitcond,~] = fmincon(@(x) -x,0,[],[],[],[],0,1,@(x) constr(x,v,a,lastudot,du),options);
-%     [newu,~,exitcond,~] = ga(@(x) -x,1,[],[],[],[],0,1,@(x) constr(x,v,a,lastudot,du));
-end
-
-function uddot = uddot(udot,last_udot,du)
-uddot = (udot^2 - last_udot^2)/2/du;
-end
-
-function [c,ceq] = constr(udot,v,a,lastudot,du)
-vmax = 1;%m/s
-amax = 1;
-c = zeros(1,4);
+function [newu,exitcond] = calcNewUdot(v,a,lastudot,du,cap)
+maxVel = cap(1);
+maxDec = cap(2);
+maxAcc = cap(3);
+scale = v'*v;
+udotsqr1 = maxVel*maxVel/scale;
+curva = norm(v)^3/norm(cross(v,a));
+udotsqr2 = maxDec*curva/scale;
+udotsqrUp = zeros(3,1);
+udotsqrLo = zeros(3,1);
 for i = 1:3
-    c(4*(i-1)+1) = v(i)*udot - vmax;
-    c(4*(i-1)+2) = a(i)*udot^2+v(i)*uddot(udot,lastudot,du)-amax;
-    c(4*(i-1)+3) = - vmax - v(i)*udot;
-    c(4*(i-1)+4) = -amax - a(i)*udot^2+v(i)*uddot(udot,lastudot,du);
+    scale4a = v(i)/2/du;
+    udotsqrup = (maxAcc+scale4a*lastudot*lastudot)/(scale4a+a(i));
+    udotsqrlo = (-maxDec+scale4a*lastudot*lastudot)/(scale4a+a(i));
+    if udotsqrup>udotsqrlo
+        udotsqrUp(i) = udotsqrup;
+        udotsqrLo(i) = udotsqrlo;
+    else
+        udotsqrLo(i) = udotsqrup;
+        udotsqrUp(i) = udotsqrlo;
+    end
 end
-ceq = [];
+
+upperBnd = min([udotsqr1;udotsqr2;udotsqrUp]);
+lowerBnd = max(udotsqrLo);
+newu = sqrt(upperBnd);
+if upperBnd>=lowerBnd
+    exitcond = 1;
+else
+    exitcond = 0;
+end
 end
 
 function [newudot,newlastudot] = BisectionMethod(f,a,b,TOL)
