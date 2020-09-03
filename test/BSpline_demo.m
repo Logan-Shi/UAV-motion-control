@@ -55,4 +55,7 @@ max = [3,5,5];
 %Vmax,Amax,Jmax
 isOnPts = 1;
 isGraph = 1;
+tic
 [p_u,v_u,a_u,j_u] = BSplineC(P(1:3,:),4,t,max,isOnPts,isGraph);
+disp("spent time calculating")
+disp(toc)
