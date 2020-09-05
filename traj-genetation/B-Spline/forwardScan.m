@@ -12,7 +12,7 @@ end
 function [newu,exitcond] = calcNewUdot(v,a,lastudot,du,cap)
 maxVel = cap(1);
 maxDec = cap(2);
-maxAcc = cap(3);
+maxAcc = cap(2);
 scale = v'*v;
 udotsqr1 = maxVel*maxVel/scale;
 curva = norm(v)^3/norm(cross(v,a));

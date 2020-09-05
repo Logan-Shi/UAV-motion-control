@@ -2,7 +2,7 @@ function [A,b,kap_sq] = calc_acc_cstrts(t,v_u,a_u,u,Amax)
 N = length(u);
 du = u(2) - u(1);
 dt = t(2) - t(1);
-kap_sq = zeros(1,N);
+kap_sq = zeros(N,1);
 for i = 1:N
     kap_sq(i) = norm(v_u(:,i))^2;
 end

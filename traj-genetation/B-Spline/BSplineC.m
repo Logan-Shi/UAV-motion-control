@@ -1,4 +1,4 @@
-function [p_t,v_t,a_t,j_t] = BSplineC(P,k,t,cap,OnPts,Graph,sample_density)
+function [p_t,v_t,a_t,j_t] = BSplineC(P,k,t,cap,OnPts,Graph,sample_density,type)
 n = size(P,2)-1;
 NodeVector = U_quasi_uniform(n,k); % 准均匀B样条的节点矢量
 % 经过way points，控制点修正
@@ -11,19 +11,28 @@ else
 end
 
 %轨迹规划
-sample_size = n*sample_density+2;
-u = linspace(0,1,sample_size);
-udot = zeros(1,length(u));
-[p_u,v_u,a_u,j_u] = BSplineDrv(P,n,k,u);
-udot = forwardScan(u,udot,v_u,a_u,cap);
-figure()
-plot(u,udot)
-udot = backwardScan(u,udot,v_u,a_u,cap);
-hold on
-plot(u,udot)
-legend("forward","backward")
-xlabel("u");ylabel("du/dt")
-grid on
+if type == 1
+    sample_size = n*sample_density+2;
+    u = linspace(0,1,sample_size);
+    udot = zeros(1,length(u));
+    [~,v_u,a_u,~] = BSplineDrv(P,n,k,u);
+    udot = forwardScan(u,udot,v_u,a_u,cap);
+    figure()
+    plot(u,udot)
+    udot = backwardScan(u,udot,v_u,a_u,cap);
+    hold on
+    plot(u,udot)
+    legend("forward","backward")
+    xlabel("u");ylabel("du/dt")
+    grid on
+else
+    if type == 2
+        u = linspace(0,1,length(t));
+        [~,v_u,a_u,j_u] = BSplineDrv(P,n,k,u);
+        [Vsq_u,kapsq] = VelPlan(t,v_u,a_u,cap(1),cap(2));
+        udot = JerkMaxed(Vsq_u,v_u,a_u,j_u,t,kapsq,cap(3));
+    end
+end
 
 %轨迹插值
 [ut,udott,uddott] = calcUt(t,u,udot);
