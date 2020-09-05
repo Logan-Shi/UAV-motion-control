@@ -18,15 +18,14 @@ for i = 1:n
     P(2,i) = sin((i-1)/n*2*pi);
     P(3,i) = 1;
 end
-% load waypts;
-% P = waypts;
-% P(3,:) = P(3,:)+1;
+load waypts;
+P = waypts;
+P(3,:) = P(3,:)+1;
 P = [[0;0;0],P];
 % load scan.mat;
 % P = P(:,1:15);
 
-tic,
-[pt,vt,at,Jt] = BSplineC(P,k,tspan,[3,5,5],1,1,5,1);
+[pt,vt,at,Jt] = BSplineC(P,k,tspan,[3,4,3],0,1);
 
 %%
 for k = 1:length(tspan)

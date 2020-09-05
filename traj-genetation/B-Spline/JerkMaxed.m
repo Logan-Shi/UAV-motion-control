@@ -1,5 +1,6 @@
-function udot = JerkMaxed(Vsq_u,v_u,a_u,j_u,u,kapsq,Jerk_max)
-N = length(u);
+function udot = JerkMaxed(Vsq_u,v_u,a_u,j_u,t,kapsq,Jerk_max)
+N = length(t);
+u = linspace(0,1,N);
 figure()
 plot(u,sqrt(Vsq_u./kapsq));
 idex =find(Vsq_u(2:end-1)==0); 
