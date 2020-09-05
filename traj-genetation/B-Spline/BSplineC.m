@@ -24,10 +24,13 @@ plot(u,udot)
 legend("forward","backward")
 xlabel("u");ylabel("du/dt")
 grid on
+
+%¹ì¼£²åÖµ
 [ut,udott,uddott] = calcUt(t,u,udot);
 [p_t,v_u,a_u,j_u] = BSplineDrv(P,n,k,ut);
 disp("spent time calculating")
 disp(toc)
+
 %·ÖÎö
 path = 0;
 v_t = zeros(3,length(t));
@@ -46,16 +49,6 @@ if (ut(end)>1-1e-5)
 else
     disp('cannot finish path under given constraint')
 end
-
-% p_td = BSpline(P,k,ut);
-% v_td = FDMinter3(t,p_t);
-% a_td = FDMinter3(t,v_t);
-% j_td = FDMinter3(t,a_t);
-% figure()
-% plot(t,a_td(1,:))
-% hold on
-% plot(t,a_t(1,:))
-% legend('fdm','calced')
 
 if Graph
     % graphing
