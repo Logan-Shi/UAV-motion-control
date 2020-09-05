@@ -1,4 +1,4 @@
-function [p_t,v_t,a_t,j_t] = BSplineC(P,k,t,cap,OnPts,Graph)
+function [p_t,v_t,a_t,j_t] = BSplineC(P,k,t,cap,OnPts,Graph,sample_density)
 n = size(P,2)-1;
 NodeVector = U_quasi_uniform(n,k); % 准均匀B样条的节点矢量
 % 经过way points，控制点修正
@@ -10,8 +10,9 @@ else
     P2 = P;
 end
 
-% 导矢计算
-u = linspace(0,1,length(t));
+%轨迹规划
+sample_size = n*sample_density+2;
+u = linspace(0,1,sample_size);
 udot = zeros(1,length(u));
 [p_u,v_u,a_u,j_u] = BSplineDrv(P,n,k,u);
 udot = forwardScan(u,udot,v_u,a_u,cap);
@@ -23,32 +24,11 @@ plot(u,udot)
 legend("forward","backward")
 xlabel("u");ylabel("du/dt")
 grid on
-% 速度规划
-% [Vsq_u,kapsq] = VelPlan(t,p_u,v_u,a_u,cap(1),cap(2));
-% Vsq_jerk = JerkMaxed(Vsq_u,v_u,a_u,j_u,t,kapsq,cap(3));
-% 轨迹插补
-% [ut,Vt] = trajInter(t,P,n,k,Vsq_jerk);
-% p_sample = BSpline(P,k,ut(end));
-ut = zeros(1,length(t));
-udott = zeros(1,length(t));
-dt = t(2)-t(1);
-ut(1) = 0.1*dt;
-for i = 2:length(t)
-    udott(i-1) = spline(u,udot,ut(i-1));
-    ut(i) = min(1,ut(i-1)+udott(i-1)*dt);
-end
-uddott = interU(ut,udott);
-figure()
-plot(t,ut)
-hold on
-plot(t,udott)
-plot(t,uddott)
-legend("u","udot","uddot")
-title("time-u")
-xlabel("time,s")
-ylabel("u")
+[ut,udott,uddott] = calcUt(t,u,udot);
 [p_t,v_u,a_u,j_u] = BSplineDrv(P,n,k,ut);
-
+disp("spent time calculating")
+disp(toc)
+%分析
 path = 0;
 v_t = zeros(3,length(t));
 a_t = zeros(3,length(t));

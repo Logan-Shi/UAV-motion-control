@@ -50,12 +50,11 @@ P = [[0;0;0;0],P];
 
 
 % function demo
-t = linspace(0,10,100);
-max = [3,3,3];
+t = linspace(0,10,1000);
+max = [3,5,5];
 %Vmax,Amax,Jmax
 isOnPts = 1;
 isGraph = 1;
+sample_density = 2;
 tic
-[p_u,v_u,a_u,j_u] = BSplineC(P(1:3,:),4,t,max,isOnPts,isGraph);
-disp("spent time calculating")
-disp(toc)
+[p_u,v_u,a_u,j_u] = BSplineC(P(1:3,:),4,t,max,isOnPts,isGraph,sample_density);
