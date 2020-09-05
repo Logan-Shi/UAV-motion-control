@@ -1,4 +1,4 @@
-clear all; close all; clc
+clear all;close all;
 %input
 k = 4;
 n = 6;
@@ -51,11 +51,11 @@ P = [[0;0;0;0],P];
 
 % function demo
 t = linspace(0,10,1000);
-max = [3,5,5];
+max = [3,5,15];
 %Vmax,Amax,Jmax
 isOnPts = 1;
 isGraph = 1;
-sample_density = 2;
+sample_density = 5;
 type = 2;%1 for time-scaling,2 for Linear Programming, 3 for LP without jerk constraints
 tic
 [p_u,v_u,a_u,j_u] = BSplineC(P(1:3,:),4,t,max,isOnPts,isGraph,sample_density,type);

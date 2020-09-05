@@ -10,12 +10,12 @@ else
     P2 = P;
 end
 
+sample_size = n*sample_density;
+u = linspace(0,1,sample_size);
+udot = zeros(1,length(u));
+[~,v_u,a_u,j_u] = BSplineDrv(P,n,k,u);
 %¹ì¼£¹æ»®
 if type == 1
-    sample_size = n*sample_density+2;
-    u = linspace(0,1,sample_size);
-    udot = zeros(1,length(u));
-    [~,v_u,a_u,~] = BSplineDrv(P,n,k,u);
     udot = forwardScan(u,udot,v_u,a_u,cap);
     figure()
     plot(u,udot)
@@ -27,10 +27,8 @@ if type == 1
     grid on
 else
     if type == 2
-        u = linspace(0,1,length(t));
-        [~,v_u,a_u,j_u] = BSplineDrv(P,n,k,u);
-        [Vsq_u,kapsq] = VelPlan(t,v_u,a_u,cap(1),cap(2));
-        udot = JerkMaxed(Vsq_u,v_u,a_u,j_u,t,kapsq,cap(3));
+        [Vsq_u,kapsq] = VelPlan(u,v_u,a_u,cap(1),cap(2));
+        udot = JerkMaxed(Vsq_u,v_u,a_u,j_u,u,kapsq,cap(3));
     end
 end
 
