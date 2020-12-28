@@ -15,14 +15,5 @@ for i = 1:length(ut)-1
     udott(i+1) = f(ut(i+1));%注意此时udott默认0
 end
 uddott = FDMinter3(t,udott);
-figure()
-plot(t,ut)
-hold on
-plot(t,udott)
-plot(t,uddott)
-legend("u","udot","uddot")
-title("time-u")
-xlabel("time,s")
-ylabel("u")
 end
 

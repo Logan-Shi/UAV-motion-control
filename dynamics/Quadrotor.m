@@ -1,10 +1,10 @@
 classdef Quadrotor < handle
     % author: ZRT
-    % last edited: ZRT
+    % last edited: SZK
     % Quadrotor class
     % Usage:
     % init a quadrotor
-    %   use quad = Quadrotor(params) or quad = Quadrotor(m,g,k,kd,I,L,b)
+    %   use quad = Quadrotor(params,position)
     %   to create a quadrotor with zero inital state
     %
     %   change the property: position, attitude to DIRECTLY change the position and the attitude
@@ -46,15 +46,15 @@ classdef Quadrotor < handle
     end
     
     methods 
-        function Quad=Quadrotor(m,g,k,kd,I,L,b)
-            if nargin == 1
-                Quad.m = m.m; Quad.g = m.g; Quad.k = m.k; Quad.kd = m.kd;
-                Quad.I = m.I; Quad.L = m.L; Quad.b = m.b;
+        function Quad=Quadrotor(params,pos)
+            Quad.m = params.m; Quad.g = params.g; Quad.k = params.k; Quad.kd = params.kd;
+            Quad.I = params.I; Quad.L = params.L; Quad.b = params.b;
+            if nargin == 1    
+                zeroInitState(Quad);
             else
-                Quad.m = m; Quad.g = g; Quad.k = k; Quad.kd = kd;
-                Quad.I = I; Quad.L = L; Quad.b = b;
+                initStatePos(Quad,pos(1),pos(2),pos(3));
             end
-            zeroInitState(Quad);
+            
         end
 
         function input2acc(Quad, rotorSpeeds)
@@ -129,18 +129,53 @@ classdef Quadrotor < handle
             Quad.Omega_H = [0,0,0].';
             Quad.Omega_dot_H = [0,0,0].';
             Quad.euler_H = [0,0,0].';
-            
+        end
+
+        function initStatePos(Quad,x,y,z)
+            Quad.position = [x,y,z].';
+            Quad.velocity = [0,0,0].';
+            Quad.acceleration = [0,0,0].';
+            Quad.attitude = eye(3);
+            Quad.Omega = [0,0,0].';
+            Quad.Omega_dot = [0,0,0].';
+            Quad.euler = [0,0,0].';
+
+            Quad.position_H = [0,0,0].';
+            Quad.velocity_H = [0,0,0].';
+            Quad.acceleration_H = [0,0,0].';
+            Quad.attitude_H = eye(3);
+            Quad.Omega_H = [0,0,0].';
+            Quad.Omega_dot_H = [0,0,0].';
+            Quad.euler_H = [0,0,0].';
+        end
+
+        function [u1,u2]=uav_controller(Quad,ksi_desired, ksi_desired_dot, ksi_desired_dot2, ksi_desired_dot3, psi_desired, psi_desired_dot, Kp_ksi, Kd_ksi, Kp_omega, Kd_omega)
+        
+            e_ksi=Quad.position-ksi_desired;
+            e_ksi_dot=Quad.velocity-ksi_desired_dot;
+            F_desired = -Kp_ksi*e_ksi-Kd_ksi*e_ksi_dot+Quad.m*Quad.g*[0;0;1]+Quad.m*ksi_desired_dot2;
+        
+            u1=dot(F_desired,Quad.attitude(:,3));
+        
+            zB_desired=F_desired/norm(F_desired);
+            xC_desired=[cos(psi_desired);sin(psi_desired);0];
+            yB_desired=cross(zB_desired,xC_desired)/norm(cross(zB_desired,xC_desired));
+            xB_desired=cross(yB_desired,zB_desired);
+        
+            R_desired=[xB_desired,yB_desired,zB_desired];
+        
+            e_R=1/2*vex((R_desired.')*Quad.attitude-(Quad.attitude.')*R_desired);
+            e_R = e_R.';
+        
+            % omega_desired 到底该怎么算？ 还没想完全清楚。
+            h=Quad.m/u1*(ksi_desired_dot3-dot(zB_desired,ksi_desired_dot3)*zB_desired);
+            p_desired=-dot(h,yB_desired);
+            q_desired=dot(h,xB_desired);
+            r_desired=psi_desired_dot*dot([0;0;1],zB_desired);
+            omega_desired=[p_desired;q_desired;r_desired];
+        
+            e_omega=Quad.Omega-omega_desired;
+            u2=-Kd_omega*e_omega-Kp_omega*e_R;
         end
     end
 end
-
-% function params=load_params()
-%     % 机体参数
-%     params.m = 1;
-%     params.g = 9.8;
-%     params.k = 1;
-%     params.kd = 0;
-%     params.I = diag([0.04 0.04 0.008]);
-%     params.L = 0.25;
-%     params.b = 0.007;
-% end

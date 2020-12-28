@@ -77,7 +77,7 @@ for k = 1:length(tspan)
     omg_c = quad_a.Omega * (randn(1)*noise+1);
 
     % 0,0: yaw, yaw_dot
-    [u1,u2] = controller(p,v,a,J,yaw,yaw_dot,p_c, v_c, quad_a.attitude, omg_c, quad_a.m, quad_a.g, Kp1,Kd1,Kp2,Kd2);
+    [u1,u2] = quad_a.uav_controller(p,v,a,J,yaw,yaw_dot,Kp1,Kd1,Kp2,Kd2);
     
     rotorSpeeds = get_rotorspeed(u1,u2,quad_a.k,quad_a.L,quad_a.b);
     

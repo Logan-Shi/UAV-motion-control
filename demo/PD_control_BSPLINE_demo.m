@@ -11,13 +11,13 @@ tspan = 0:dt:duration;
 
 %input
 k = 4;
-n = 6;
-P(:,1) = zeros(3,1);
-for i = 1:n
-    P(1,i) = cos((i-1)/n*2*pi)-1;
-    P(2,i) = sin((i-1)/n*2*pi);
-    P(3,i) = 1;
-end
+% n = 6;
+% P(:,1) = zeros(3,1);
+% for i = 1:n
+%     P(1,i) = cos((i-1)/n*2*pi)-1;
+%     P(2,i) = sin((i-1)/n*2*pi);
+%     P(3,i) = 1;
+% end
 load waypts;
 P = waypts;
 P(3,:) = P(3,:)+1;
@@ -31,13 +31,8 @@ P = [[0;0;0],P];
 for k = 1:length(tspan)
     t = tspan(k);
     p = pt(:,k); v = vt(:,k); a = at(:,k); J = Jt(:,k); yaw = 0; yd = 0;
-    
-    noise = 0;
-    p_c = quad_a.position + randn(1)*noise;
-    v_c = quad_a.velocity + randn(1)*noise;
-    omg_c = quad_a.Omega + randn(1)*noise;
 
-    [u1,u2] = controller(p,v,a,J,yaw,yd,p_c, v_c, quad_a.attitude, omg_c, quad_a.m, quad_a.g,1.5,0.8,diag([1,1,1.2]),diag([0.1,0.1,1.2]));
+    [u1,u2] = quad_a.uav_controller(p,v,a,J,yaw,yd,1.5,0.8,diag([1,1,1.2]),diag([0.1,0.1,1.2]));
     
     spd = get_rotorspeed(u1,u2,quad_a.k,quad_a.L,quad_a.b);
     

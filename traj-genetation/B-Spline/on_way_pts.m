@@ -1,4 +1,7 @@
-function [P,P2] = on_way_pts(P,k,NodeVector)
+function [P,P2] = on_way_pts(P,k)
+    n = size(P,2)-1;
+    NodeVector = U_quasi_uniform(n,k); % 准均匀B样条的节点矢量
+    
     P2 = P;
     n = size(P,2)-1;
     u = linspace(0,1,n+1);
@@ -12,4 +15,7 @@ function [P,P2] = on_way_pts(P,k,NodeVector)
     
     P = (transpose(phi)*phi)\(transpose(phi)*transpose(P));
     P = transpose(P);
+
+    p_tmp = BSpline(P,k,linspace(0,1,n+1));
+    disp(['off way points by: ' num2str(norm(p_tmp-P2))]);
 end

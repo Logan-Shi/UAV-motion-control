@@ -1,44 +1,67 @@
-function [p_t,v_t,a_t,j_t] = BSplineC(P,k,t,cap,OnPts,Graph,sample_density,type)
-n = size(P,2)-1;
-NodeVector = U_quasi_uniform(n,k); % 准均匀B样条的节点矢量
+function [p_t,v_t,a_t,j_t] = BSplineC(P,k,t,cap,OnPts,Graph,type)
+
+if nargin<4
+    cap = [3,4,5];
+    OnPts = 1;
+    Graph = 0;
+    type = 1;
+else
+    if nargin<7
+        type = 1;
+    end
+end
+
 % 经过way points，控制点修正
 if OnPts
-    [P,P2] = on_way_pts(P,k,NodeVector);
-    p_tmp = BSpline(P,k,linspace(0,1,n+1));
-    disp(['off way points by: ' num2str(norm(p_tmp-P2))]);
+    [P,P2] = on_way_pts(P,k);
 else
     P2 = P;
 end
 
+sample_size = length(t);
+u = linspace(0,1,sample_size);
+[~,v_u,a_u,j_u] = BSplineDrv(P,k,u);
+tic
 %轨迹规划
 if type == 1
-    sample_size = n*sample_density+2;
-    u = linspace(0,1,sample_size);
     udot = zeros(1,length(u));
-    [~,v_u,a_u,~] = BSplineDrv(P,n,k,u);
-    udot = forwardScan(u,udot,v_u,a_u,cap);
-    figure()
-    plot(u,udot)
-    udot = backwardScan(u,udot,v_u,a_u,cap);
-    hold on
-    plot(u,udot)
-    legend("forward","backward")
-    xlabel("u");ylabel("du/dt")
-    grid on
+    udot_for = forwardScan(u,udot,v_u,a_u,cap);
+    udot_back = backwardScan(u,udot_for,v_u,a_u,cap);
+    udot_jerk = JerkMaxed(udot_back,v_u,a_u,j_u,cap(3));
+    disp("spent time calculating")
+    disp(toc)
+    if Graph
+        figure()
+        plot(u,udot_for)
+        hold on
+        plot(u,udot_back)
+        plot(u,udot_jerk)
+        legend("forward","backward","jerk-constrained")
+%         legend("forward","jerk-constrained")
+        xlabel("u");ylabel("du/dt")
+        grid on
+    end
 else
     if type == 2
-        u = linspace(0,1,length(t));
-        [~,v_u,a_u,j_u] = BSplineDrv(P,n,k,u);
-        [Vsq_u,kapsq] = VelPlan(t,v_u,a_u,cap(1),cap(2));
-        udot = JerkMaxed(Vsq_u,v_u,a_u,j_u,t,kapsq,cap(3));
+        udot = VelPlan(v_u,a_u,cap(1),cap(2));
+        udot_jerk = JerkMaxed(udot,v_u,a_u,j_u,cap(3));
+        disp("spent time calculating")
+        disp(toc)
+        if Graph
+            figure()
+            plot(u,udot)
+            hold on
+            plot(u,udot_jerk)
+            legend("without-jerk","jerk-constrained")
+            xlabel("u");ylabel("du/dt")
+            grid on
+        end
     end
 end
 
 %轨迹插值
-[ut,udott,uddott] = calcUt(t,u,udot);
-[p_t,v_u,a_u,j_u] = BSplineDrv(P,n,k,ut);
-disp("spent time calculating")
-disp(toc)
+[ut,udott,uddott] = calcUt(t,u,udot_jerk);
+[p_t,v_u,a_u,~] = BSplineDrv(P,k,ut);
 
 %分析
 path = 0;
@@ -61,6 +84,16 @@ end
 
 if Graph
     % graphing
+    figure()
+    plot(t,ut)
+    hold on
+    plot(t,udott)
+    plot(t,uddott)
+    legend("u","udot","uddot")
+    title("time-u")
+    xlabel("time,s")
+    ylabel("u")
+    
     figure()
     hold on
     plot3(P2(1, :), P2(2, :),P2(3, :),...

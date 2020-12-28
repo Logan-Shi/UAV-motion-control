@@ -10,16 +10,17 @@ end
 end
 
 function [newu,exitcond] = calcNewUdot(v,a,lastudot,du,cap)
+dim = length(v);
 maxVel = cap(1);
 maxDec = cap(2);
 maxAcc = cap(2);
 scale = v'*v;
 udotsqr1 = maxVel*maxVel/scale;
-curva = norm(v)^3/norm(cross(v,a));
-udotsqr2 = maxDec*curva/scale;
-udotsqrUp = zeros(3,1);
-udotsqrLo = zeros(3,1);
-for i = 1:3
+% curva = norm(v)^3/norm(cross(v,a));
+% udotsqr2 = maxDec*curva/scale;
+udotsqrUp = zeros(dim,1);
+udotsqrLo = zeros(dim,1);
+for i = 1:dim
     scale4a = v(i)/2/du;
     udotsqrup = (maxAcc+scale4a*lastudot*lastudot)/(scale4a+a(i));
     udotsqrlo = (-maxDec+scale4a*lastudot*lastudot)/(scale4a+a(i));
@@ -32,7 +33,7 @@ for i = 1:3
     end
 end
 
-upperBnd = min([udotsqr1;udotsqr2;udotsqrUp]);
+upperBnd = min([udotsqr1;udotsqrUp]);
 lowerBnd = max(udotsqrLo);
 newu = sqrt(upperBnd);
 if upperBnd>=lowerBnd

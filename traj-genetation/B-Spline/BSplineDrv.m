@@ -1,4 +1,5 @@
-function [p_u,v_u,a_u,j_u] = BSplineDrv(P,n,k,u)
+function [p_u,v_u,a_u,j_u] = BSplineDrv(P,k,u)
+n = size(P,2)-1;
 [p_u,NodeVector4v] = BSpline(P,k,u);
 % ÇúÏßµ¼Ê¸¼ÆËã
 for i = 0:n-1
