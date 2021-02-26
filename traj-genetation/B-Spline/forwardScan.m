@@ -2,6 +2,7 @@ function udot = forwardScan(u,udot,v_u,a_u,cap)
 for i = 2:length(u)
     [newudot,exitcond] = calcNewUdot(v_u(:,i),a_u(:,i),udot(i-1),u(2)-u(1),cap);
     if exitcond<=0
+%         disp("warning: forward scan infeasible")
         [newudot,newlastudot] = BisectionMethod(@(lastudot) calcNewUdot(v_u(:,i),a_u(:,i),lastudot,u(2)-u(1),cap),0,1,1e-3);
         udot(i-1) = newlastudot;
     end

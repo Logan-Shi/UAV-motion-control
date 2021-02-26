@@ -1,17 +1,18 @@
 function udot = backwardScan(u,udot,v_u,a_u,cap)
 udot(end) = 0;
 for i = length(u):-1:2
-    check = constrBack(udot(i-1),v_u(:,i-1),a_u(:,i-1),udot(i),u(2)-u(1),cap);
-    if max(check)>0
+%      check = constrBack(udot(i-1),v_u(:,i-1),a_u(:,i-1),udot(i),u(2)-u(1),cap);
+%      if max(check)>0
         [newudot,exitcond] = calcNewUdotBack(v_u(:,i-1),a_u(:,i-1),udot(i),u(2)-u(1),cap);
         if exitcond<=0
+            disp("warning: backward problem")
             [newudot,newlastudot] = BisectionMethod(@(lastudot) calcNewUdotBack(v_u(:,i-1),a_u(:,i-1),lastudot,u(2)-u(1),cap),0,1,1e-3);
             udot(i) = newlastudot;
         end
         if newudot<udot(i-1)
             udot(i-1) = newudot;
         end
-    end
+%      end
 end
 end
 

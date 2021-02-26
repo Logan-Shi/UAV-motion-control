@@ -27,7 +27,7 @@ if type == 1
     udot = zeros(1,length(u));
     udot_for = forwardScan(u,udot,v_u,a_u,cap);
     udot_back = backwardScan(u,udot_for,v_u,a_u,cap);
-    udot_jerk = JerkMaxed(udot_back,v_u,a_u,j_u,cap(3));
+%     udot_jerk = JerkMaxed(udot_back,v_u,a_u,j_u,cap(3));
     disp("spent time calculating")
     disp(toc)
     if Graph
@@ -35,7 +35,7 @@ if type == 1
         plot(u,udot_for)
         hold on
         plot(u,udot_back)
-        plot(u,udot_jerk)
+%         plot(u,udot_jerk)
         legend("forward","backward","jerk-constrained")
 %         legend("forward","jerk-constrained")
         xlabel("u");ylabel("du/dt")
@@ -60,7 +60,7 @@ else
 end
 
 %πÏº£≤Â÷µ
-[ut,udott,uddott] = calcUt(t,u,udot_jerk);
+[ut,udott,uddott] = calcUt(t,u,udot_back);
 [p_t,v_u,a_u,~] = BSplineDrv(P,k,ut);
 
 %∑÷Œˆ
