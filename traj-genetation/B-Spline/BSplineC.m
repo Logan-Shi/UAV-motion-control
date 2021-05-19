@@ -24,10 +24,10 @@ u = linspace(0,1,sample_size);
 tic
 %¹ì¼£¹æ»®
 if type == 1
-    udot = zeros(1,length(u));
+    udot = 0.2*ones(1,length(u));
     udot_for = forwardScan(u,udot,v_u,a_u,cap);
-    udot_back = backwardScan(u,udot_for,v_u,a_u,cap);
-%     udot_jerk = JerkMaxed(udot_back,v_u,a_u,j_u,cap(3));
+    udot_back = backwardScan(u,udot_for,v_u,a_u,cap,0.2);
+    udot_jerk = JerkMaxed(udot_back,v_u,a_u,j_u,cap(3));
     disp("spent time calculating")
     disp(toc)
     if Graph
@@ -35,9 +35,9 @@ if type == 1
         plot(u,udot_for)
         hold on
         plot(u,udot_back)
-%         plot(u,udot_jerk)
+        plot(u,udot_jerk)
         legend("forward","backward","jerk-constrained")
-%         legend("forward","jerk-constrained")
+        legend("forward","jerk-constrained")
         xlabel("u");ylabel("du/dt")
         grid on
     end
@@ -53,6 +53,25 @@ else
             hold on
             plot(u,udot_jerk)
             legend("without-jerk","jerk-constrained")
+            xlabel("u");ylabel("du/dt")
+            grid on
+        end
+else
+    if type == 3
+        udot = 0.2*ones(1,length(u));
+        udot_for = forwardScan(u,udot,v_u,a_u,cap);
+        udot_back = backwardScan(u,udot_for,v_u,a_u,cap,0.2);
+%         udot_jerk = JerkMaxed(udot_back,v_u,a_u,j_u,cap(3));
+        disp("spent time calculating")
+        disp(toc)
+        if Graph
+            figure()
+            plot(u,udot_for)
+            hold on
+            plot(u,udot_back)
+%             plot(u,udot_jerk)
+            legend("forward","backward")
+%             legend("forward","jerk-constrained")
             xlabel("u");ylabel("du/dt")
             grid on
         end

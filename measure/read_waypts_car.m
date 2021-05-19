@@ -1,0 +1,12 @@
+surfix = './measure/';
+filepath = strcat(surfix,'test_car.txt');
+fi = fopen(filepath,'r');
+formatSpec = '[%f,%f,%f]\n';
+wayPts = fscanf(fi,formatSpec,[3,inf]);
+h = 380;
+wayPts(:,1:8) = wayPts(:,1:8) - wayPts(:,1) + wayPts(:,9);
+wayPts(:,1:8) = wayPts(:,1:8) + [0,0,380]';
+wayPts = wayPts(:,1:8);
+fclose(fi);
+savepath = strcat(surfix,'car.mat');
+save(savepath,'wayPts');

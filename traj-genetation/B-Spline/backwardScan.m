@@ -1,5 +1,5 @@
-function udot = backwardScan(u,udot,v_u,a_u,cap)
-udot(end) = 0;
+function udot = backwardScan(u,udot,v_u,a_u,cap,udotend)
+udot(end) = udotend;
 for i = length(u):-1:2
 %      check = constrBack(udot(i-1),v_u(:,i-1),a_u(:,i-1),udot(i),u(2)-u(1),cap);
 %      if max(check)>0
