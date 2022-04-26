@@ -35,7 +35,7 @@ for j = 1:3
     if v_u(j,N-1) == 0
         den2 = 1;
     else
-        den2 = v_u(j,2);
+        den2 = v_u(j,N-1);
     end
     tmp4bnd(3:4,end-1:end) = [Jmax/2/qstar(N-1),N^2*(v_u(j,N-2))^2*sqrt(qstar(N-1))/8/den2;
                               Jmax/2/qstar(N-1),-N^2*(v_u(j,N-2))^2*sqrt(qstar(N-1))/8/den2];
