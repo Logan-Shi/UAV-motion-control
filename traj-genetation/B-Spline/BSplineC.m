@@ -41,40 +41,37 @@ if type == 1
         xlabel("u");ylabel("du/dt")
         grid on
     end
-else
-    if type == 2
-        udot = VelPlan(v_u,a_u,cap(1),cap(2));
-        udot_jerk = JerkMaxed(udot,v_u,a_u,j_u,cap(3));
-        disp("spent time calculating")
-        disp(toc)
-        if Graph
-            figure()
-            plot(u,udot)
-            hold on
-            plot(u,udot_jerk)
-            legend("without-jerk","jerk-constrained")
-            xlabel("u");ylabel("du/dt")
-            grid on
-        end
-else
-    if type == 3
-        udot = 0.2*ones(1,length(u));
-        udot_for = forwardScan(u,udot,v_u,a_u,cap);
-        udot_back = backwardScan(u,udot_for,v_u,a_u,cap,0.2);
-%         udot_jerk = JerkMaxed(udot_back,v_u,a_u,j_u,cap(3));
-        disp("spent time calculating")
-        disp(toc)
-        if Graph
-            figure()
-            plot(u,udot_for)
-            hold on
-            plot(u,udot_back)
-%             plot(u,udot_jerk)
-            legend("forward","backward")
-%             legend("forward","jerk-constrained")
-            xlabel("u");ylabel("du/dt")
-            grid on
-        end
+elseif type == 2
+    udot = VelPlan(v_u,a_u,cap(1),cap(2));
+    udot_jerk = JerkMaxed(udot,v_u,a_u,j_u,cap(3));
+    disp("spent time calculating")
+    disp(toc)
+    if Graph
+        figure()
+        plot(u,udot)
+        hold on
+        plot(u,udot_jerk)
+        legend("without-jerk","jerk-constrained")
+        xlabel("u");ylabel("du/dt")
+        grid on
+    end
+elseif type == 3
+    udot = 0.2*ones(1,length(u));
+    udot_for = forwardScan(u,udot,v_u,a_u,cap);
+    udot_back = backwardScan(u,udot_for,v_u,a_u,cap,0.2);
+    %         udot_jerk = JerkMaxed(udot_back,v_u,a_u,j_u,cap(3));
+    disp("spent time calculating")
+    disp(toc)
+    if Graph
+        figure()
+        plot(u,udot_for)
+        hold on
+        plot(u,udot_back)
+        %             plot(u,udot_jerk)
+        legend("forward","backward")
+        %             legend("forward","jerk-constrained")
+        xlabel("u");ylabel("du/dt")
+        grid on
     end
 end
 
@@ -112,7 +109,7 @@ if Graph
     title("time-u")
     xlabel("time,s")
     ylabel("u")
-    
+
     figure()
     hold on
     plot3(P2(1, :), P2(2, :),P2(3, :),...
@@ -120,11 +117,11 @@ if Graph
         'MarkerEdgeColor','k',...
         'MarkerFaceColor','g',...
         'MarkerSize',6);
-%     plot3(p_sample(1, :), p_sample(2, :),p_sample(3, :),...
-%         'o','LineWidth',1,...
-%         'MarkerEdgeColor','k',...
-%         'MarkerFaceColor','b',...
-%         'MarkerSize',8);
+    %     plot3(p_sample(1, :), p_sample(2, :),p_sample(3, :),...
+    %         'o','LineWidth',1,...
+    %         'MarkerEdgeColor','k',...
+    %         'MarkerFaceColor','b',...
+    %         'MarkerSize',8);
     plot3(p_t(1,:), p_t(2,:), p_t(3,:), 'Marker','.','LineStyle','-', 'Color',[.3 .6 .9]);
     quiver3(p_t(1,:), p_t(2,:), p_t(3,:),v_t(1,:), v_t(2,:), v_t(3,:), 3)
     quiver3(p_t(1,:), p_t(2,:), p_t(3,:),a_t(1,:), a_t(2,:), a_t(3,:), 3)
@@ -133,7 +130,7 @@ if Graph
     title('B-Spline Demo')
     xlabel('x');ylabel('y');zlabel('z')
     view(45,45)
-    
+
     figure()
     subplot(3,1,1)
     plot(t,p_t(1,:))
@@ -144,7 +141,7 @@ if Graph
     xlabel('time,s');ylabel('m');
     title('x y z position')
     grid on
-    
+
     subplot(3,1,2)
     plot(t,v_t(1,:))
     hold on
@@ -154,7 +151,7 @@ if Graph
     xlabel('time,s');ylabel('m/s');
     title('x y z velocity')
     grid on
-    
+
     subplot(3,1,3)
     plot(t,a_t(1,:))
     hold on
@@ -164,7 +161,7 @@ if Graph
     xlabel('time,s');ylabel('m/s^2');
     title('x y z accelaration')
     grid on
-    
+
     figure()
     plot(t,j_t(1,:))
     hold on
