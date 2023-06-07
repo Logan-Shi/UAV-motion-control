@@ -6,7 +6,7 @@ quad_a = Quadrotor(params);
 dt = 0.01;
 quad_a.dt = dt;
 
-duration = 12;
+duration = 33;
 tspan = 0:dt:duration;
 
 %input
@@ -18,16 +18,15 @@ k = 4;
 %     P(2,i) = sin((i-1)/n*2*pi);
 %     P(3,i) = 1;
 % end
+
 load waypts;
 P = waypts;
 P(3,:) = P(3,:)+1;
 P = [[0;0;0],P];
-% load scan.mat;
-% P = P(:,1:15);
 
-[pt,vt,at,Jt] = BSplineC(P,k,tspan,[3,4,3],0,1);
+[pt,vt,at,Jt] = BSplineC(P,k,tspan,[0.25,1.25,2.5],0,1);
 
-%%
+% simulation
 for k = 1:length(tspan)
     t = tspan(k);
     p = pt(:,k); v = vt(:,k); a = at(:,k); J = Jt(:,k); yaw = 0; yd = 0;
@@ -55,7 +54,7 @@ subplot(3,2,1)
 plot3(traj(1,:), traj(2,:), traj(3,:), 'b')
 hold on; grid on; view(45,45)
 plot3(pt(1,:), pt(2,:), pt(3,:), 'r')
-title('Simulation result'); legend('actual trajectory', 'desired trajectory')
+title('Simulation result'); legend('actual trajectory', 'desired trajectory','Location','best')
 subplot(3,2,2)
 plot(tspan, traj(1,:), tspan, pt(1,:))
 xlabel('t'); ylabel('x'); legend('actual', 'desired')
@@ -75,8 +74,8 @@ title('yaw')
 subplot(3,2,6)
 plot(tspan,yawd_d,tspan,yaw_d)
 grid on
-legend('yawd','yaw')
-title('yaw desired')
+legend('yaw dot','yaw')
+title('yaw dot')
 
 err = norm(traj - pt);
 x_err = norm(traj(1,:) - pt(1,:));

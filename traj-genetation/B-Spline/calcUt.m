@@ -11,7 +11,7 @@ for i = 1:length(ut)-1
     k2 = f(yi+h/2*k1);
     k3 = f(yi+h/2*k2);
     k4 = f(yi+h*k3);
-    ut(i+1) = yi+h/6*(k1+2*k2+2*k3+k4);
+    ut(i+1) = min(1,yi+h/6*(k1+2*k2+2*k3+k4));
     udott(i+1) = f(ut(i+1));%注意此时udott默认0
 end
 uddott = FDMinter3(t,udott);
